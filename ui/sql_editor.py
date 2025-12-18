@@ -177,7 +177,12 @@ class SQLEditorWindow:
             
             # Executar query
             import pandas as pd
-            df = pd.read_sql(test_query, db.get_connection())
+            import warnings
+            
+            # Silenciar aviso do pandas sobre SQLAlchemy
+            with warnings.catch_warnings():
+                warnings.filterwarnings("ignore", category=UserWarning)
+                df = pd.read_sql(test_query, db.get_connection())
             
             row_count = len(df)
             col_count = len(df.columns) if row_count > 0 else 0
