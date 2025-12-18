@@ -1,84 +1,200 @@
-# EXTRATOR FIREBIRD 2.5 PARA EXCEL (Modular)
+# 🔥 EXTRATOR FIREBIRD 2.5 PARA EXCEL - Sistema Universal
 
-Versão aprimorada e modularizada do extrator de dados Firebird 2.5 para Excel, agora com suporte a Interface Gráfica (GUI), Logs e Barras de Progresso.
+Sistema completo e modular para extração de dados de **qualquer banco Firebird 2.5** para arquivos Excel (.xlsx), com interface gráfica moderna e recursos avançados.
+
+## ✨ Principais Recursos
+
+- 🖥️ **Interface Gráfica Completa** - Tkinter com design moderno
+- 🌍 **Universal** - Funciona com qualquer banco Firebird 2.5
+- 📅 **Datas em PT-BR** - Digite datas no formato brasileiro (DD/MM/AAAA) com auto-formatação
+- 📊 **Barra de Progresso** - Acompanhe a extração em tempo real
+- 🎨 **Temas Personalizáveis** - Escolha o visual que preferir (incluindo Arc)
+- 🔍 **Filtros Dinâmicos** - Extraia apenas o período desejado
+- 📝 **Logs Automáticos** - Histórico completo de todas as operações
+- ⚡ **Multithreading** - Interface não trava durante extrações pesadas
 
 ## 📂 Estrutura do Projeto
 
 ```
 migracao_firebird/
 ├── core/               # Lógica principal (Banco e Exportador)
-├── ui/                 # Telas e Interface Tkinter
-├── utils/              # Loggers e formatadores
-├── tools/              # Scripts de diagnóstico e inspeção (Checkers)
-├── sql/                # Consultas SQL por entidade
-├── output/             # Arquivos Excel gerados (.xlsx)
-├── logs/               # Histórico detalhado de execuções (.log)
-├── main_gui.py         # App com Interface Gráfica (RECOMENDADO)
-├── exportar.py         # App via Linha de Comando (CLI)
-├── config.py           # Configurações do Banco
-└── requirements.txt    # Dependências (incluindo tqdm)
+│   ├── database.py     # Gerenciamento de conexões
+│   └── exporter.py     # Processamento e exportação
+├── ui/                 # Interface Gráfica Tkinter
+│   └── app.py          # Janela principal
+├── utils/              # Utilitários
+│   └── logger.py       # Sistema de logs
+├── tools/              # Scripts auxiliares de diagnóstico
+├── sql/                # Consultas SQL customizáveis
+├── output/             # Arquivos Excel gerados
+├── logs/               # Histórico de execuções
+├── main_gui.py         # 🎯 INICIAR AQUI (Interface Gráfica)
+├── exportar.py         # Modo linha de comando (CLI)
+├── config.py           # Configurações padrão
+└── requirements.txt    # Dependências Python
 ```
 
-## 🛠️ Requisitos
+## 🚀 Início Rápido
 
-- Python 3.x (64-bit recomendado)
-- Firebird Client (`fbclient.dll` versão 64-bit deve estar na pasta raiz)
-- Bibliotecas Python: `fdb`, `pandas`, `xlsxwriter`
+### 1. Instalação
 
-## 📦 Instalação
+```bash
+# Clone o repositório
+git clone git@github.com:chwpym/extracao-firebird-2.5.git
+cd extracao-firebird-2.5
 
-1. Clone o repositório:
-   ```bash
-   git clone git@github.com:chwpym/extracao-firebird-2.5.git
-   cd extracao-firebird-2.5
-   ```
-
-2. Instale as dependências:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-## ⚙️ Configuração
-
-Edite o arquivo `config.py` para apontar para o seu arquivo de banco de dados (.FDB):
-
-```python
-DB_CONFIG = {
-    'dsn': 'localhost:D:/Caminho/Seu/Banco/NomeBanco.FDB',
-    'user': 'Nome User',
-    'password': 'Senha',
-    'charset': 'WIN1252',
-    'fb_library_name': 'fbclient.dll'
-}
+# Instale as dependências
+pip install -r requirements.txt
 ```
 
-## 🚀 Como Usar (Interface Gráfica)
-
-O modo recomendado é utilizar a Interface Gráfica:
+### 2. Execute a Interface Gráfica
 
 ```bash
 python main_gui.py
 ```
-Nesta tela, você poderá selecionar o arquivo `.FDB`, definir o período de extração e acompanhar os logs em tempo real.
 
-## 💻 Como Usar (Linha de Comando)
+### 3. Configure na Interface
 
-Para rodar via terminal com barra de progresso:
+Na janela que abrir, você precisa informar:
+
+- **Arquivo .FDB**: Caminho do seu banco Firebird
+- **Usuário**: Geralmente `SYSDBA`
+- **Senha**: Senha do banco (geralmente `masterkey`)
+- **fbclient.dll**: Caminho da biblioteca Firebird (ex: `C:/Program Files/Firebird/fbclient.dll`)
+- **Período**: Datas de início e fim no formato DD/MM/AAAA
+
+### 4. Inicie a Extração
+
+Clique em **"INICIAR EXTRAÇÃO TOTAL"** e acompanhe o progresso!
+
+## 🛠️ Requisitos do Sistema
+
+- **Python 3.7+** (64-bit recomendado)
+- **Firebird Client** (`fbclient.dll` versão compatível com seu banco)
+- **Bibliotecas Python**:
+  - `fdb` - Conexão com Firebird
+  - `pandas` - Processamento de dados
+  - `xlsxwriter` - Geração de Excel
+  - `tqdm` - Barras de progresso
+
+## 📖 Modos de Uso
+
+### Interface Gráfica (Recomendado) 🖥️
+
+```bash
+python main_gui.py
+```
+
+**Recursos da GUI:**
+- Seleção visual de arquivos
+- Datas com auto-formatação (DD/MM/AAAA)
+- Barra de progresso em tempo real
+- Log de execução na própria janela
+- Temas personalizáveis
+- Validação de dados antes da extração
+
+### Linha de Comando (CLI) 💻
 
 ```bash
 python exportar.py
 ```
 
-## ⚙️ Configuração Local
+**Quando usar:**
+- Automação via scripts
+- Agendamento de tarefas
+- Servidores sem interface gráfica
 
-O arquivo `config.py` vem configurado para buscar o banco em `D:/DELPHI/bd/SGCADM.FDB`. O arquivo `.gitignore` protege suas configurações locais para que não sejam enviadas por engano para o GitHub.
+## ⚙️ Configuração Avançada
 
-## 💡 Melhorias Implementadas
+### Arquivo `config.py`
 
-- **Arquitetura Modular:** Separação completa de interface, lógica e utilitários.
-- **Multithreading:** A interface gráfica não trava durante a extração pesada.
-- **Logs em Arquivo:** Todo erro ou aviso é salvo automaticamente na pasta `logs/`.
-- **Organização:** Scripts de teste e inspeção foram movidos para a pasta `tools/`.
+Valores padrão que aparecem na interface:
+
+```python
+DB_CONFIG = {
+    'dsn': 'localhost:D:/Caminho/Banco.FDB',
+    'user': 'SYSDBA',
+    'password': 'masterkey',
+    'charset': 'WIN1252',
+    'fb_library_name': 'fbclient.dll'
+}
+```
+
+### Customização de Consultas SQL
+
+As consultas SQL estão na pasta `sql/` e podem ser editadas:
+
+- `clientes.sql` - Extração de clientes
+- `produtos.sql` - Extração de produtos
+- `fornecedores.sql` - Extração de fornecedores
+- `entradas_saidas.sql` - Movimentações (Kardex)
+- `contas_pagar.sql` - Contas a pagar
+- `contas_receber.sql` - Contas a receber
+
+**Placeholders disponíveis:**
+- `:DATA_INI` - Data inicial (substituída automaticamente)
+- `:DATA_FIM` - Data final (substituída automaticamente)
+
+## 🎨 Temas Disponíveis
+
+Acesse **Menu → Temas** para escolher:
+- `clam` (padrão)
+- `alt`
+- `default`
+- `classic`
+- `vista` (Windows)
+- `xpnative` (Windows XP)
+- `arc` (moderno)
+
+## 📊 Dados Extraídos
+
+O sistema extrai as seguintes entidades (se existirem no banco):
+
+1. **Clientes** - Cadastro completo
+2. **Produtos** - Catálogo de produtos
+3. **Fornecedores** - Cadastro de fornecedores
+4. **Entradas/Saídas** - Movimentação de estoque (Kardex)
+5. **Contas a Pagar** - Parcelas e histórico
+6. **Contas a Receber** - Recebimentos e histórico
+
+## 🔒 Segurança
+
+- ✅ Senhas não são exibidas na interface (campo com `*`)
+- ✅ `.gitignore` configurado para não versionar dados sensíveis
+- ✅ Logs não contêm senhas
+- ✅ Arquivos de saída ficam apenas localmente
+
+## 🐛 Solução de Problemas
+
+### Erro: "No module named 'fdb'"
+```bash
+pip install fdb
+```
+
+### Erro: "fbclient.dll not found"
+- Baixe o Firebird Client compatível com seu banco
+- Indique o caminho completo na interface
+
+### Erro de conexão
+- Verifique se o banco está acessível
+- Confirme usuário e senha
+- Teste o DSN: `localhost:D:/caminho/banco.fdb`
+
+## 📝 Logs
+
+Todos os logs são salvos em `logs/extracao_AAAAMMDD.log` com:
+- Timestamp de cada operação
+- Quantidade de registros processados
+- Erros detalhados (se houver)
+
+## 🤝 Contribuindo
+
+Este projeto está em desenvolvimento ativo. Sugestões e melhorias são bem-vindas!
+
+## 📄 Licença
+
+Projeto desenvolvido para migração de dados legados Firebird 2.5 para Excel.
 
 ---
-Projeto desenvolvido para migração de dados legados Firebird para o formato Excel.
+
+**Desenvolvido com ❤️ para facilitar migrações de dados Firebird**
