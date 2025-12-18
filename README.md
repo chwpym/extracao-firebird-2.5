@@ -35,9 +35,9 @@ Edite o arquivo `config.py` para apontar para o seu arquivo de banco de dados (.
 
 ```python
 DB_CONFIG = {
-    'dsn': 'localhost:D:/Caminho/Seu/Banco/SGCADM.FDB',
-    'user': 'SYSDBA',
-    'password': 'masterkey',
+    'dsn': 'localhost:D:/Caminho/Seu/Banco/NomeBanco.FDB',
+    'user': 'Nome User',
+    'password': 'Senha',
     'charset': 'WIN1252',
     'fb_library_name': 'fbclient.dll'
 }

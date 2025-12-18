@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.env
+
+# Database & DLLs
+*.fdb
+fbclient.dll
+gds32.dll
+
+# Output
+output/
+*.xlsx
+
+# IDEs
+.vscode/
+.idea/

@@ -7,11 +7,11 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 # Ajuste o caminho do banco (database) para o local correto do seu arquivo .fdb ou .gdb
 
 DB_CONFIG = {
-    'dsn': 'localhost:D:/DELPHI/bd/SGCADM.FDB',
+    'dsn': 'localhost:C:/CAMINHO/PARA/SEU/BANCO.FDB',
     'user': 'SYSDBA',
     'password': 'masterkey',
     'charset': 'WIN1252',
-    # Aponta para a DLL na mesma pasta do script
+    # Mantém a busca da DLL na pasta do script
     'fb_library_name': os.path.join(BASE_DIR, 'fbclient.dll')
 }
 
