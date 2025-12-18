@@ -23,6 +23,7 @@ class ExtractorApp:
         self.db_path = tk.StringVar(value=db_path_initial)
         self.db_user = tk.StringVar(value=config.DB_CONFIG['user'])
         self.db_pass = tk.StringVar(value=config.DB_CONFIG['password'])
+        self.dll_path = tk.StringVar(value=config.DB_CONFIG.get('fb_library_name', 'fbclient.dll'))
         
         # Datas em padrão PT-BR (DD/MM/AAAA)
         self.start_date_str = tk.StringVar(value="01/01/2024")
@@ -47,45 +48,12 @@ class ExtractorApp:
         for t in available_themes:
             theme_menu.add_command(label=t, command=lambda theme=t: self._apply_theme(theme))
 
-        # Menu Ferramentas
-        tools_menu = tk.Menu(menubar, tearoff=0)
-        menubar.add_cascade(label="Ferramentas", menu=tools_menu)
-        
-        tools_menu.add_command(label="Verificar Contagem de Tabelas", command=lambda: self._run_tool("check_counts.py"))
-        tools_menu.add_command(label="Inspecionar Banco (Tabelas)", command=lambda: self._run_tool("inspect_db.py"))
-        tools_menu.add_command(label="Testar Nomes no Pagar", command=lambda: self._run_tool("test_pagar_names.py"))
-
     def _apply_theme(self, theme_name):
         """Aplica o tema selecionado"""
         try:
             self.style.theme_use(theme_name)
         except tk.TclError:
             messagebox.showwarning("Tema Indisponível", f"O tema '{theme_name}' não está disponível neste sistema.")
-
-    def _run_tool(self, script_name):
-        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        script_path = os.path.join(base_dir, 'tools', script_name)
-        
-        if not os.path.exists(script_path):
-            messagebox.showerror("Erro", f"Script não encontrado: {script_path}")
-            return
-            
-        self._log_to_gui(f"Executando ferramenta: {script_name}...")
-        
-        def run():
-            import subprocess
-            try:
-                # Importante: rodar no base_dir para que imports funcionem se necessário
-                result = subprocess.run(['python', script_path], capture_output=True, text=True, encoding='latin-1', cwd=base_dir)
-                self._log_to_gui(f"--- Fim da ferramenta {script_name} ---")
-                if result.stdout:
-                    self._log_to_gui(result.stdout)
-                if result.stderr:
-                    self._log_to_gui(f"ERRO:\n{result.stderr}")
-            except Exception as e:
-                self._log_to_gui(f"Erro ao rodar ferramenta: {e}")
-                
-        threading.Thread(target=run, daemon=True).start()
 
     def _auto_format_date(self, var, event=None):
         """Formata automaticamente DD/MM/AAAA enquanto o usuário digita"""
@@ -124,6 +92,10 @@ class ExtractorApp:
         
         ttk.Label(db_frame, text="Senha:").grid(row=1, column=1, sticky="e", padx=(0, 110))
         ttk.Entry(db_frame, textvariable=self.db_pass, show="*", width=15).grid(row=1, column=1, sticky="e", padx=5)
+        
+        ttk.Label(db_frame, text="fbclient.dll:").grid(row=2, column=0, sticky="w", pady=5)
+        ttk.Entry(db_frame, textvariable=self.dll_path).grid(row=2, column=1, sticky="ew", padx=5)
+        ttk.Button(db_frame, text="Procurar...", command=self._browse_dll).grid(row=2, column=2, padx=5)
         
         db_frame.columnconfigure(1, weight=1)
         
@@ -168,6 +140,11 @@ class ExtractorApp:
         filename = filedialog.askopenfilename(filetypes=[("Firebird DB", "*.fdb"), ("All Files", "*.*")])
         if filename:
             self.db_path.set(filename)
+
+    def _browse_dll(self):
+        filename = filedialog.askopenfilename(filetypes=[("DLL Files", "*.dll"), ("All Files", "*.*")])
+        if filename:
+            self.dll_path.set(filename)
 
     def _parse_date(self, date_str):
         """Converte DD/MM/AAAA para AAAA-MM-DD"""
@@ -215,6 +192,7 @@ class ExtractorApp:
             local_config['dsn'] = dsn
             local_config['user'] = self.db_user.get()
             local_config['password'] = self.db_pass.get()
+            local_config['fb_library_name'] = self.dll_path.get()
             
             self._log_to_gui(f"Conectando a: {dsn}...")
             
