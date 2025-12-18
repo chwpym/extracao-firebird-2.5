@@ -1,14 +1,23 @@
-# EXTRATOR FIREBIRD 2.5 PARA EXCEL
+# EXTRATOR FIREBIRD 2.5 PARA EXCEL (Modular)
 
-Este projeto foi desenvolvido para automatizar a extração de dados históricos de um banco de dados Firebird 2.5 (utilizado originalmente em sistemas Delphi 7) e exportá-los para arquivos Excel (.xlsx) organizados por categorias.
+Versão aprimorada e modularizada do extrator de dados Firebird 2.5 para Excel, agora com suporte a Interface Gráfica (GUI), Logs e Barras de Progresso.
 
-## 🚀 Funcionalidades
+## 📂 Estrutura do Projeto
 
-- **Extração Unificada (Kardex):** Relatório consolidado de Entradas (ENTITENS) e Saídas (PEDITENS), incluindo descrições de produtos, nomes de clientes/fornecedores e datas reais de entrada.
-- **Financeiro Detalhado:** Extração de todas as parcelas de Contas a Pagar (PAGDET) e Contas a Receber (RECDET) com vínculo aos nomes das entidades.
-- **Cadastros Básicos:** Exportação completa de Clientes, Produtos e Fornecedores.
-- **Performance Otimizada:** Consultas SQL utilizando JOINS para lidar com grandes volumes de dados (testado com +300 mil registros).
-- **Gestão de Dependências:** Configuração automática para bibliotecas legadas (`fbclient.dll`).
+```
+migracao_firebird/
+├── core/               # Lógica principal (Banco e Exportador)
+├── ui/                 # Telas e Interface Tkinter
+├── utils/              # Loggers e formatadores
+├── tools/              # Scripts de diagnóstico e inspeção (Checkers)
+├── sql/                # Consultas SQL por entidade
+├── output/             # Arquivos Excel gerados (.xlsx)
+├── logs/               # Histórico detalhado de execuções (.log)
+├── main_gui.py         # App com Interface Gráfica (RECOMENDADO)
+├── exportar.py         # App via Linha de Comando (CLI)
+├── config.py           # Configurações do Banco
+└── requirements.txt    # Dependências (incluindo tqdm)
+```
 
 ## 🛠️ Requisitos
 
@@ -43,22 +52,33 @@ DB_CONFIG = {
 }
 ```
 
-## 📖 Como Usar
+## 🚀 Como Usar (Interface Gráfica)
 
-Para iniciar a extração completa:
+O modo recomendado é utilizar a Interface Gráfica:
+
+```bash
+python main_gui.py
+```
+Nesta tela, você poderá selecionar o arquivo `.FDB`, definir o período de extração e acompanhar os logs em tempo real.
+
+## 💻 Como Usar (Linha de Comando)
+
+Para rodar via terminal com barra de progresso:
 
 ```bash
 python exportar.py
 ```
 
-Os arquivos serão gerados na subpasta `output/`.
+## ⚙️ Configuração Local
 
-## 💡 Próximas Melhorias (Sugestões)
+O arquivo `config.py` vem configurado para buscar o banco em `D:/DELPHI/bd/SGCADM.FDB`. O arquivo `.gitignore` protege suas configurações locais para que não sejam enviadas por engano para o GitHub.
 
-- **Interface Gráfica (Tkinter):** Criar uma janela para seleção do arquivo .FDB e botão de "Iniciar Extração".
-- **Barras de Progresso:** Implementar `tqdm` para acompanhar a evolução de cada tabela no terminal.
-- **Logs Automatizados:** Gravar erros e estatísticas em um arquivo `.log`.
-- **Filtros Dinâmicos:** Adicionar uma interface para escolher o período (datas) antes da extração.
+## 💡 Melhorias Implementadas
+
+- **Arquitetura Modular:** Separação completa de interface, lógica e utilitários.
+- **Multithreading:** A interface gráfica não trava durante a extração pesada.
+- **Logs em Arquivo:** Todo erro ou aviso é salvo automaticamente na pasta `logs/`.
+- **Organização:** Scripts de teste e inspeção foram movidos para a pasta `tools/`.
 
 ---
-Desenvolvido como ferramenta de migração de dados legados.
+Projeto desenvolvido para migração de dados legados Firebird para o formato Excel.

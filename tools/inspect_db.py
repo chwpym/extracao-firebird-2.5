@@ -1,3 +1,9 @@
+import os
+import sys
+
+# Adiciona o diretório pai ao path para encontrar o config.py
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 import fdb
 import config
 import pandas as pd

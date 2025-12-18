@@ -1,96 +1,38 @@
 import os
-import fdb
-import pandas as pd
 import config
-from datetime import datetime
+from core.database import FirebirdDB
+from core.exporter import DataExporter
+from utils.logger import setup_logger
 
-# Mapa de arquivos SQL para nomes de saída (sem extensão)
-ENTIDADES = {
-    'clientes': 'clientes',
-    'produtos': 'produtos',
-    'fornecedores': 'fornecedores',
-    'entradas_saidas': 'entradas_saidas',
-    'contas_pagar': 'contas_pagar',
-    'contas_receber': 'contas_receber'
-}
+def run_cli_extraction():
+    # Inicializa Logger
+    logger = setup_logger()
+    logger.info("Iniciando extração via CLI...")
 
-def conectar_banco():
-    """Estabelece conexão com o banco Firebird"""
-    try:
-        con = fdb.connect(
-            dsn=config.DB_CONFIG['dsn'],
-            user=config.DB_CONFIG['user'],
-            password=config.DB_CONFIG['password'],
-            charset=config.DB_CONFIG['charset'],
-            fb_library_name=config.DB_CONFIG.get('fb_library_name')
-        )
-        print(f"[{datetime.now()}] Conectado ao banco de dados com sucesso.")
-        return con
-    except Exception as e:
-        print(f"Erro ao conectar no banco: {e}")
-        return None
-
-def ler_sql(nome_arquivo):
-    """Lê o conteúdo do arquivo SQL"""
-    caminho = os.path.join('sql', f'{nome_arquivo}.sql')
-    try:
-        with open(caminho, 'r', encoding='utf-8') as f:
-            return f.read()
-    except FileNotFoundError:
-        print(f"Arquivo SQL não encontrado: {caminho}")
-        return None
-    except Exception as e:
-        print(f"Erro ao ler arquivo {caminho}: {e}")
-        return None
-
-def exportar_dados():
-    """Função principal de exportação"""
-    
-    # Criar pasta output se não existir
-    if not os.path.exists(config.OUTPUT_DIR):
-        os.makedirs(config.OUTPUT_DIR)
-        print(f"Pasta '{config.OUTPUT_DIR}' criada.")
-
-    con = conectar_banco()
-    if not con:
+    # Configura Banco
+    db = FirebirdDB(config.DB_CONFIG)
+    if not db.connect():
         return
 
-    try:
-        for chave, nome_arquivo in ENTIDADES.items():
-            print(f"\n--- Processando: {nome_arquivo} ---")
-            
-            sql_query = ler_sql(chave)
-            if not sql_query:
-                continue
+    # Configura Exportador
+    sql_dir = os.path.join(config.BASE_DIR, 'sql')
+    exporter = DataExporter(db.get_connection(), config.OUTPUT_DIR, sql_dir)
 
-            print(f"Executando consulta SQL...")
-            
-            try:
-                # Usando pandas para ler diretamente do banco via SQL
-                # O fdb cursor é passado como conexão
-                df = pd.read_sql(sql_query, con)
-                
-                rows_count = len(df)
-                print(f"Registros encontrados: {rows_count}")
-                
-                if rows_count > 0:
-                    caminho_saida = os.path.join(config.OUTPUT_DIR, f'{nome_arquivo}.xlsx')
-                    print(f"Salvando Excel em: {caminho_saida}")
-                    
-                    # Exportando para Excel sem index e sem formatar datas (raw data)
-                    # Usando xlsxwriter para maior robustez com caracteres especiais
-                    df.to_excel(caminho_saida, index=False, engine='xlsxwriter')
-                    
-                    print(f"Sucesso: {nome_arquivo}.xlsx gerado.")
-                else:
-                    print(f"Aviso: Nenhum dado retornado para {nome_arquivo}.")
-                    
-            except Exception as e:
-                print(f"Erro ao processar {nome_arquivo}: {e}")
+    # Entidades para exportar
+    entities = [
+        'clientes',
+        'produtos',
+        'fornecedores',
+        'entradas_saidas',
+        'contas_pagar',
+        'contas_receber'
+    ]
 
-    finally:
-        con.close()
-        print(f"\n[{datetime.now()}] Conexão fechada. Processo finalizado.")
+    for entity in entities:
+        exporter.export_entity(entity)
+
+    db.close()
+    logger.info("Extração CLI finalizada. Resultados na pasta output/.")
 
 if __name__ == "__main__":
-    exportar_dados()
+    run_cli_extraction()

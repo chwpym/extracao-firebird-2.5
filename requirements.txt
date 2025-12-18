@@ -2,3 +2,4 @@ fdb
 pandas
 openpyxl
 xlsxwriter
+tqdm
