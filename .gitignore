@@ -14,6 +14,13 @@ gds32.dll
 output/
 *.xlsx
 
+# Logs
+logs/
+
+# User preferences
+user_preferences.json
+code/
+.idea/
+
 # IDEs
 .vscode/
-.idea/

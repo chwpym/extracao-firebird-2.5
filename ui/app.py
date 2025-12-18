@@ -6,6 +6,7 @@ import os
 from datetime import datetime
 from core.database import FirebirdDB
 from core.exporter import DataExporter
+from utils.preferences import UserPreferences
 import config
 import logging
 
@@ -15,9 +16,16 @@ class ExtractorApp:
         self.root.title("Extrator Firebird 2.5 - Original Auto Peças")
         self.root.geometry("800x700")
         
+        # Preferências do usuário
+        self.prefs = UserPreferences()
+        
         # Estilo
         self.style = ttk.Style()
-        self.style.theme_use('clam')
+        saved_theme = self.prefs.get_theme()
+        try:
+            self.style.theme_use(saved_theme)
+        except:
+            self.style.theme_use('clam')
         
         db_path_initial = config.DB_CONFIG['dsn'].split(':')[-1] if ':' in config.DB_CONFIG['dsn'] else config.DB_CONFIG['dsn']
         self.db_path = tk.StringVar(value=db_path_initial)
@@ -36,6 +44,11 @@ class ExtractorApp:
         menubar = tk.Menu(self.root)
         self.root.config(menu=menubar)
         
+        # Menu Configurar
+        config_menu = tk.Menu(menubar, tearoff=0)
+        menubar.add_cascade(label="Configurar", menu=config_menu)
+        config_menu.add_command(label="📝 Editar Consultas SQL", command=self._open_sql_editor)
+        
         # Menu Temas
         theme_menu = tk.Menu(menubar, tearoff=0)
         menubar.add_cascade(label="Temas", menu=theme_menu)
@@ -48,10 +61,18 @@ class ExtractorApp:
         for t in available_themes:
             theme_menu.add_command(label=t, command=lambda theme=t: self._apply_theme(theme))
 
+    def _open_sql_editor(self):
+        """Abre a janela do editor SQL"""
+        from ui.sql_editor import SQLEditorWindow
+        sql_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'sql')
+        SQLEditorWindow(self.root, sql_dir)
+
     def _apply_theme(self, theme_name):
-        """Aplica o tema selecionado"""
+        """Aplica o tema selecionado e salva a preferência"""
         try:
             self.style.theme_use(theme_name)
+            self.prefs.set_theme(theme_name)
+            messagebox.showinfo("Tema Aplicado", f"Tema '{theme_name}' salvo com sucesso!\nSerá carregado automaticamente na próxima vez.")
         except tk.TclError:
             messagebox.showwarning("Tema Indisponível", f"O tema '{theme_name}' não está disponível neste sistema.")
 
