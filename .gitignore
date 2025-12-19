@@ -10,17 +10,23 @@ venv/
 fbclient.dll
 gds32.dll
 
-# Output
+# Output - DADOS SENSÍVEIS DA EMPRESA
 output/
 *.xlsx
+*.xls
 
-# Logs
+# Logs - DADOS SENSÍVEIS
 logs/
+*.log
 
 # User preferences
 user_preferences.json
-code/
-.idea/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
 
 # IDEs
 .vscode/
+.idea/
