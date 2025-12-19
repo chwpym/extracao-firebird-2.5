@@ -4,12 +4,15 @@ Sistema completo e modular para extração de dados de **qualquer banco Firebird
 
 ## ✨ Principais Recursos
 
-- 🖥️ **Interface Gráfica Completa** - Tkinter com design moderno
+- 🖥️ **Interface Gráfica Completa** - Tkinter com design moderno e centralizado
 - 🌍 **Universal** - Funciona com qualquer banco Firebird 2.5
 - 📅 **Datas em PT-BR** - Digite datas no formato brasileiro (DD/MM/AAAA) com auto-formatação
 - 📊 **Barra de Progresso** - Acompanhe a extração em tempo real
-- 🎨 **Temas Personalizáveis** - Escolha o visual que preferir (incluindo Arc)
+- 🎨 **Temas Personalizáveis** - Escolha o visual que preferir (salvos automaticamente)
 - 🔍 **Filtros Dinâmicos** - Extraia apenas o período desejado
+- 📝 **Editor SQL Integrado** - Biblioteca com 12+ queries úteis + editor livre
+- 🧪 **Teste de Queries** - Valide SQL antes de extrair
+- 📖 **Sistema de Ajuda** - Manual completo + referência SQL Firebird
 - 📝 **Logs Automáticos** - Histórico completo de todas as operações
 - ⚡ **Multithreading** - Interface não trava durante extrações pesadas
 
@@ -21,11 +24,15 @@ migracao_firebird/
 │   ├── database.py     # Gerenciamento de conexões
 │   └── exporter.py     # Processamento e exportação
 ├── ui/                 # Interface Gráfica Tkinter
-│   └── app.py          # Janela principal
+│   ├── app.py          # Janela principal
+│   ├── sql_editor.py   # Editor SQL com biblioteca de queries
+│   └── help_window.py  # Sistema de ajuda
 ├── utils/              # Utilitários
-│   └── logger.py       # Sistema de logs
+│   ├── logger.py       # Sistema de logs
+│   └── preferences.py  # Gerenciamento de preferências (temas)
 ├── tools/              # Scripts auxiliares de diagnóstico
 ├── sql/                # Consultas SQL customizáveis
+│   └── query_library.json  # Biblioteca de queries salvas
 ├── output/             # Arquivos Excel gerados
 ├── logs/               # Histórico de execuções
 ├── main_gui.py         # 🎯 INICIAR AQUI (Interface Gráfica)
@@ -77,32 +84,80 @@ Clique em **"INICIAR EXTRAÇÃO TOTAL"** e acompanhe o progresso!
   - `xlsxwriter` - Geração de Excel
   - `tqdm` - Barras de progresso
 
-## 📖 Modos de Uso
+## 📖 Recursos Avançados
 
-### Interface Gráfica (Recomendado) 🖥️
+### 📝 Editor SQL Integrado
 
-```bash
-python main_gui.py
-```
+**Menu: Configurar → Editar Consultas SQL**
 
-**Recursos da GUI:**
-- Seleção visual de arquivos
-- Datas com auto-formatação (DD/MM/AAAA)
-- Barra de progresso em tempo real
-- Log de execução na própria janela
-- Temas personalizáveis
-- Validação de dados antes da extração
+O editor SQL possui:
 
-### Linha de Comando (CLI) 💻
+- **Biblioteca com 12+ queries úteis**:
+  - 📋 Listar Todas as Tabelas
+  - 🔍 Ver Estrutura de Tabela
+  - 📊 Contar Registros
+  - 👥 Extração: Clientes
+  - 📦 Extração: Produtos
+  - 🏭 Extração: Fornecedores
+  - 📊 Movimentações: Kardex Completo
+  - 💰 Financeiro: Contas a Pagar
+  - 💵 Financeiro: Contas a Receber
+  - 🔎 Explorar: Primeiros 100 Registros
+  - 📈 Análise: Produtos Mais Vendidos
+  - 👤 Análise: Melhores Clientes
 
-```bash
-python exportar.py
-```
+- **Recursos do Editor**:
+  - ✅ Dropdown para selecionar queries salvas
+  - ✅ Descrição detalhada de cada query
+  - ✅ Editor de texto livre para SQL customizado
+  - ✅ Teste de queries com preview dos resultados
+  - ✅ Checkbox "Mostrar TODOS" para ver todos os registros
+  - ✅ Salvar queries personalizadas
+  - ✅ Excluir queries que não precisa
 
-**Quando usar:**
-- Automação via scripts
-- Agendamento de tarefas
-- Servidores sem interface gráfica
+### 🧪 Teste de Queries
+
+Antes de executar uma extração:
+
+1. Escreva ou selecione uma query
+2. Marque "📊 Mostrar TODOS" se quiser ver todos os registros (opcional)
+3. Clique em "🧪 Testar Query"
+4. Veja o resultado em uma janela com:
+   - Número de registros retornados
+   - Lista de colunas
+   - Preview dos dados (primeiras 10 linhas ou todos)
+
+### 📚 Sistema de Ajuda
+
+**Menu: Ajuda**
+
+- **📖 Manual de Uso**: Guia completo do sistema
+- **💻 Comandos SQL Firebird**: Referência rápida de sintaxe
+- **🌐 Documentação Online**: Links para docs oficiais em PT-BR
+
+### 🎨 Temas Personalizáveis
+
+**Menu: Temas**
+
+Escolha entre os temas disponíveis:
+- `winnative` - Visual nativo do Windows (recomendado)
+- `clam` - Estilo moderno e limpo
+- `alt` - Alternativo
+- `default` - Padrão do Tkinter
+- `classic` - Estilo clássico
+
+**Sua escolha é salva automaticamente!**
+
+## 📊 Dados Extraídos
+
+O sistema extrai as seguintes entidades (se existirem no banco):
+
+1. **Clientes** - Cadastro completo
+2. **Produtos** - Catálogo de produtos
+3. **Fornecedores** - Cadastro de fornecedores
+4. **Entradas/Saídas** - Movimentação de estoque (Kardex)
+5. **Contas a Pagar** - Parcelas e histórico
+6. **Contas a Receber** - Recebimentos e histórico
 
 ## ⚙️ Configuração Avançada
 
@@ -122,7 +177,7 @@ DB_CONFIG = {
 
 ### Customização de Consultas SQL
 
-As consultas SQL estão na pasta `sql/` e podem ser editadas:
+As consultas SQL estão na pasta `sql/` e podem ser editadas pelo **Editor SQL** ou manualmente:
 
 - `clientes.sql` - Extração de clientes
 - `produtos.sql` - Extração de produtos
@@ -135,27 +190,23 @@ As consultas SQL estão na pasta `sql/` e podem ser editadas:
 - `:DATA_INI` - Data inicial (substituída automaticamente)
 - `:DATA_FIM` - Data final (substituída automaticamente)
 
-## 🎨 Temas Disponíveis
+## 💡 Dicas de Uso
 
-Acesse **Menu → Temas** para escolher:
-- `clam` (padrão)
-- `alt`
-- `default`
-- `classic`
-- `vista` (Windows)
-- `xpnative` (Windows XP)
-- `arc` (moderno)
+1. **Explore o banco primeiro**: Use a query "Listar Todas as Tabelas" para ver o que existe
+2. **Teste antes de extrair**: Sempre teste queries complexas no editor SQL
+3. **Use o checkbox "Mostrar TODOS" com cuidado**: Pode demorar em tabelas grandes
+4. **Consulte o manual**: Menu → Ajuda → Manual de Uso
+5. **Aprenda SQL Firebird**: Menu → Ajuda → Comandos SQL Firebird
 
-## 📊 Dados Extraídos
+### 🔍 Diferenças Firebird vs MySQL
 
-O sistema extrai as seguintes entidades (se existirem no banco):
-
-1. **Clientes** - Cadastro completo
-2. **Produtos** - Catálogo de produtos
-3. **Fornecedores** - Cadastro de fornecedores
-4. **Entradas/Saídas** - Movimentação de estoque (Kardex)
-5. **Contas a Pagar** - Parcelas e histórico
-6. **Contas a Receber** - Recebimentos e histórico
+| MySQL | Firebird |
+|-------|----------|
+| `LIMIT 100` | `SELECT FIRST 100` |
+| `SHOW TABLES` | `SELECT ... FROM RDB$RELATIONS` |
+| `AUTO_INCREMENT` | `GENERATOR / SEQUENCE` |
+| `NOW()` | `CURRENT_TIMESTAMP` |
+| `CONCAT(a, b)` | `a \|\| b` |
 
 ## 🔒 Segurança
 
@@ -163,6 +214,7 @@ O sistema extrai as seguintes entidades (se existirem no banco):
 - ✅ `.gitignore` configurado para não versionar dados sensíveis
 - ✅ Logs não contêm senhas
 - ✅ Arquivos de saída ficam apenas localmente
+- ✅ Preferências do usuário (temas) não são versionadas
 
 ## 🐛 Solução de Problemas
 
@@ -180,6 +232,10 @@ pip install fdb
 - Confirme usuário e senha
 - Teste o DSN: `localhost:D:/caminho/banco.fdb`
 
+### Janelas não aparecem centralizadas
+- Isso pode acontecer em monitores com DPI alto
+- As janelas ainda funcionam normalmente
+
 ## 📝 Logs
 
 Todos os logs são salvos em `logs/extracao_AAAAMMDD.log` com:
@@ -193,7 +249,7 @@ Este projeto está em desenvolvimento ativo. Sugestões e melhorias são bem-vin
 
 ## 📄 Licença
 
-Projeto desenvolvido para migração de dados legados Firebird 2.5 para Excel.
+Projeto desenvolvido para facilitar migrações de dados legados Firebird 2.5 para Excel.
 
 ---
 
