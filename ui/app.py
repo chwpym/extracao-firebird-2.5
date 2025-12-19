@@ -67,12 +67,8 @@ class ExtractorApp:
         theme_menu = tk.Menu(menubar, tearoff=0)
         menubar.add_cascade(label="Temas", menu=theme_menu)
         
-        # Adiciona todos os temas disponíveis + 'arc' se não estiver na lista
-        available_themes = list(self.style.theme_names())
-        if 'arc' not in available_themes:
-            available_themes.append('arc')
-            
-        for t in available_themes:
+        # Adiciona apenas os temas disponíveis nativamente
+        for t in self.style.theme_names():
             theme_menu.add_command(label=t, command=lambda theme=t: self._apply_theme(theme))
         
         # Menu Ajuda
