@@ -74,12 +74,35 @@ class ExtractorApp:
             
         for t in available_themes:
             theme_menu.add_command(label=t, command=lambda theme=t: self._apply_theme(theme))
+        
+        # Menu Ajuda
+        help_menu = tk.Menu(menubar, tearoff=0)
+        menubar.add_cascade(label="Ajuda", menu=help_menu)
+        help_menu.add_command(label="📖 Manual de Uso", command=self._show_manual)
+        help_menu.add_command(label="💻 Comandos SQL Firebird", command=self._show_sql_commands)
+        help_menu.add_separator()
+        help_menu.add_command(label="🌐 Documentação Online", command=self._open_documentation)
 
     def _open_sql_editor(self):
         """Abre a janela do editor SQL"""
         from ui.sql_editor import SQLEditorWindow
         sql_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'sql')
         SQLEditorWindow(self.root, sql_dir)
+    
+    def _show_manual(self):
+        """Abre o manual de uso"""
+        from ui.help_window import HelpWindow
+        HelpWindow(self.root, "manual")
+    
+    def _show_sql_commands(self):
+        """Abre a referência de comandos SQL"""
+        from ui.help_window import HelpWindow
+        HelpWindow(self.root, "sql_commands")
+    
+    def _open_documentation(self):
+        """Abre links de documentação"""
+        from ui.help_window import open_documentation
+        open_documentation()
 
     def _apply_theme(self, theme_name):
         """Aplica o tema selecionado e salva a preferência"""
