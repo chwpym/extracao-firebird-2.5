@@ -13,7 +13,7 @@ import logging
 class ExtractorApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("Extrator Firebird 2.5 - Original Auto Peças")
+        self.root.title("Extrator Firebird 2.5")
         self.root.geometry("800x700")
         
         # Preferências do usuário

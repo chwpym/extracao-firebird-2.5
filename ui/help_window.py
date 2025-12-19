@@ -344,8 +344,8 @@ IFNULL(x, y)             →  COALESCE(x, y)
 def open_documentation():
     """Abre links de documentação no navegador"""
     links = [
-        ("Firebird SQL Reference", "https://firebirdsql.org/file/documentation/html/en/refdocs/fblangref25-en/firebird-25-language-reference.html"),
-        ("Firebird FAQ", "https://firebirdsql.org/en/firebird-technical-support/"),
+        ("Firebird RDBMS (PT-BR)", "https://www.firebirdsql.org/pt/firebird-rdbms"),
+        ("Firebird Development (PT-BR)", "https://www.firebirdsql.org/pt/development"),
         ("Python FDB Documentation", "https://fdb.readthedocs.io/")
     ]
     
