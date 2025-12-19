@@ -51,7 +51,7 @@ class ExtractorApp:
         screen_width = self.root.winfo_screenwidth()
         screen_height = self.root.winfo_screenheight()
         x = (screen_width - width) // 2
-        y = (screen_height - height) // 2
+        y = ((screen_height - height) // 2) - 30  # Subir 30px para não encostar na barra de tarefas
         self.root.geometry(f"{width}x{height}+{x}+{y}")
         
     def _create_menu(self):
