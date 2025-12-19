@@ -19,6 +19,11 @@ class SQLEditorWindow:
         self.window.title("Editor SQL - Biblioteca de Queries")
         self.window.geometry("1000x700")
         
+        # Manter janela sempre visível e em foco
+        self.window.transient(parent)
+        self.window.grab_set()
+        self.window.focus_force()
+        
         self._create_widgets()
         
     def _load_query_library(self):
@@ -114,6 +119,12 @@ class SQLEditorWindow:
         # Frame do editor SQL
         editor_frame = ttk.LabelFrame(self.window, text="✏️ Editor SQL", padding="10")
         editor_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=5)
+        
+        # Nota de ajuda
+        help_note = ttk.Label(editor_frame, 
+            text="💡 Dica: Use as queries da biblioteca como referência. Firebird usa sintaxe diferente de MySQL (ex: SELECT FIRST 100 * FROM tabela ao invés de LIMIT 100)",
+            foreground="blue", wraplength=950, font=("Arial", 8))
+        help_note.pack(pady=5)
         
         self.sql_editor = ScrolledText(editor_frame, wrap=tk.WORD, font=("Consolas", 10), height=20)
         self.sql_editor.pack(fill=tk.BOTH, expand=True)
@@ -243,14 +254,44 @@ class SQLEditorWindow:
             
             db.close()
             
-            result_msg = f"✅ Query executada com sucesso!\n\n"
-            result_msg += f"📊 Registros: {row_count}\n"
-            result_msg += f"📋 Colunas: {col_count}\n\n"
+            # Criar janela de resultado mais detalhada
+            result_window = tk.Toplevel(self.window)
+            result_window.title("Resultado do Teste")
+            result_window.geometry("700x500")
+            result_window.transient(self.window)
+            
+            # Frame de resumo
+            summary_frame = ttk.Frame(result_window, padding="10")
+            summary_frame.pack(fill=tk.X)
+            
+            summary_text = f"✅ Query executada com sucesso!\n📊 Registros: {row_count} | 📋 Colunas: {col_count}"
+            ttk.Label(summary_frame, text=summary_text, font=("Arial", 10, "bold")).pack()
             
             if row_count > 0:
-                result_msg += f"Colunas retornadas:\n{', '.join(df.columns.tolist())}"
+                # Mostrar colunas
+                cols_frame = ttk.LabelFrame(result_window, text="Colunas Retornadas", padding="10")
+                cols_frame.pack(fill=tk.X, padx=10, pady=5)
+                
+                cols_text = ", ".join(df.columns.tolist())
+                ttk.Label(cols_frame, text=cols_text, wraplength=650).pack()
+                
+                # Mostrar preview dos dados
+                preview_frame = ttk.LabelFrame(result_window, text="Preview dos Dados (primeiras 10 linhas)", padding="10")
+                preview_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=5)
+                
+                preview_text = ScrolledText(preview_frame, wrap=tk.NONE, font=("Consolas", 9), height=15)
+                preview_text.pack(fill=tk.BOTH, expand=True)
+                
+                # Formatar dados para exibição
+                preview_data = df.head(10).to_string(index=False)
+                preview_text.insert('1.0', preview_data)
+                preview_text.config(state='disabled')
+            else:
+                ttk.Label(result_window, text="⚠️ Nenhum registro retornado", 
+                         font=("Arial", 10), foreground="orange").pack(pady=20)
             
-            messagebox.showinfo("Resultado do Teste", result_msg)
+            # Botão fechar
+            ttk.Button(result_window, text="OK", command=result_window.destroy).pack(pady=10)
             
         except Exception as e:
             error_msg = f"❌ Erro ao executar query:\n\n{str(e)}\n\n"
