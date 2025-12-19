@@ -40,6 +40,20 @@ class ExtractorApp:
         self._create_widgets()
         self._create_menu()
         
+        # Centralizar janela
+        self._center_window()
+    
+    def _center_window(self):
+        """Centraliza a janela na tela"""
+        self.root.update_idletasks()
+        width = 800
+        height = 700
+        screen_width = self.root.winfo_screenwidth()
+        screen_height = self.root.winfo_screenheight()
+        x = (screen_width - width) // 2
+        y = (screen_height - height) // 2
+        self.root.geometry(f"{width}x{height}+{x}+{y}")
+        
     def _create_menu(self):
         menubar = tk.Menu(self.root)
         self.root.config(menu=menubar)

@@ -24,7 +24,19 @@ class SQLEditorWindow:
         self.window.grab_set()
         self.window.focus_force()
         
+        # Centralizar janela
+        self._center_window(self.window, 1000, 700)
+        
         self._create_widgets()
+    
+    def _center_window(self, window, width, height):
+        """Centraliza a janela na tela"""
+        window.update_idletasks()
+        screen_width = window.winfo_screenwidth()
+        screen_height = window.winfo_screenheight()
+        x = (screen_width - width) // 2
+        y = (screen_height - height) // 2
+        window.geometry(f"{width}x{height}+{x}+{y}")
         
     def _load_query_library(self):
         """Carrega ou cria a biblioteca de queries"""
@@ -132,6 +144,11 @@ class SQLEditorWindow:
         # Frame de botões
         btn_frame = ttk.Frame(self.window, padding="10")
         btn_frame.pack(fill=tk.X)
+        
+        # Checkbox para mostrar todos os resultados
+        self.show_all_var = tk.BooleanVar(value=False)
+        ttk.Checkbutton(btn_frame, text="📊 Mostrar TODOS os registros (pode demorar)", 
+                       variable=self.show_all_var).pack(side=tk.LEFT, padx=5)
         
         ttk.Button(btn_frame, text="🧪 Testar Query", command=self._test_query, style="Accent.TButton").pack(side=tk.LEFT, padx=5)
         ttk.Button(btn_frame, text="💾 Salvar Alterações", command=self._save_current_query).pack(side=tk.LEFT, padx=5)
@@ -257,8 +274,10 @@ class SQLEditorWindow:
             # Criar janela de resultado mais detalhada
             result_window = tk.Toplevel(self.window)
             result_window.title("Resultado do Teste")
-            result_window.geometry("700x500")
             result_window.transient(self.window)
+            
+            # Centralizar janela de resultado
+            self._center_window(result_window, 800, 600)
             
             # Frame de resumo
             summary_frame = ttk.Frame(result_window, padding="10")
@@ -276,14 +295,18 @@ class SQLEditorWindow:
                 ttk.Label(cols_frame, text=cols_text, wraplength=650).pack()
                 
                 # Mostrar preview dos dados
-                preview_frame = ttk.LabelFrame(result_window, text="Preview dos Dados (primeiras 10 linhas)", padding="10")
+                show_all = self.show_all_var.get()
+                num_rows = row_count if show_all else min(10, row_count)
+                preview_title = f"Preview dos Dados ({num_rows} de {row_count} linhas)" if not show_all else f"Todos os Dados ({row_count} linhas)"
+                
+                preview_frame = ttk.LabelFrame(result_window, text=preview_title, padding="10")
                 preview_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=5)
                 
                 preview_text = ScrolledText(preview_frame, wrap=tk.NONE, font=("Consolas", 9), height=15)
                 preview_text.pack(fill=tk.BOTH, expand=True)
                 
                 # Formatar dados para exibição
-                preview_data = df.head(10).to_string(index=False)
+                preview_data = df.head(num_rows).to_string(index=False) if not show_all else df.to_string(index=False)
                 preview_text.insert('1.0', preview_data)
                 preview_text.config(state='disabled')
             else:
