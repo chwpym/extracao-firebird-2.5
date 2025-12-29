@@ -1,0 +1,50 @@
+"""
+Queries SQL para o módulo de consulta de produtos
+"""
+
+# Query para buscar produto por código, descrição ou referência
+BUSCAR_PRODUTO = """
+SELECT 
+    PROD_CODIGO,
+    PROD_DESCRICAOPRODUTO,
+    PROD_APLICACAO,
+    PROD_ESTOQUEATUAL,
+    PROD_PRECOVENDA,
+    PROD_LOCALIZACAO,
+    PROD_REFERENCIA,
+    PROD_CODIGOBARRA
+FROM PRODUTO
+WHERE 
+    PROD_CODIGO = :codigo OR
+    UPPER(PROD_DESCRICAOPRODUTO) LIKE :descricao OR
+    UPPER(PROD_REFERENCIA) LIKE :referencia OR
+    PROD_CODIGOBARRA = :codigo
+"""
+
+# Query para histórico de compras (quantidade variável)
+HISTORICO_COMPRAS = """
+SELECT FIRST :limit
+    e.ENT_DATAENTRADA,
+    f.FOR_NOME,
+    ei.ENI_QTDEENTRADA,
+    ei.ENI_VALORUNITARIO,
+    e.ENT_NUMERONOTAFISCAL
+FROM ENTITENS ei
+JOIN ENTRADA e ON ei.ENT_NUMEROOPERACAO = e.ENT_NUMEROOPERACAO
+LEFT JOIN FORNECEDOR f ON e.FOR_CODIGO = f.FOR_CODIGO
+WHERE ei.PROD_CODIGO = :codigo
+ORDER BY e.ENT_DATAENTRADA DESC
+"""
+
+# Query para calcular preço médio das últimas compras
+PRECO_MEDIO_COMPRAS = """
+SELECT AVG(ei.ENI_VALORUNITARIO) as PRECO_MEDIO
+FROM (
+    SELECT FIRST :limit ei.ENI_VALORUNITARIO
+    FROM ENTITENS ei
+    JOIN ENTRADA e ON ei.ENT_NUMEROOPERACAO = e.ENT_NUMEROOPERACAO
+    WHERE ei.PROD_CODIGO = :codigo
+    AND ei.ENI_VALORUNITARIO > 0
+    ORDER BY e.ENT_DATAENTRADA DESC
+) ei
+"""

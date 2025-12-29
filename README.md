@@ -84,7 +84,83 @@ Clique em **"INICIAR EXTRAÇÃO TOTAL"** e acompanhe o progresso!
   - `xlsxwriter` - Geração de Excel
   - `tqdm` - Barras de progresso
 
+
 ## 📖 Recursos Avançados
+
+### 🔍 Consulta de Produtos (Novo!)
+
+**Menu: Consultar → Produtos**
+
+Interface completa para consulta e análise de produtos com recursos avançados:
+
+#### 🎯 Funcionalidades Principais
+
+**Busca Inteligente:**
+- ✅ Busca multi-palavra com lógica AND (ex: "COXIM CORSA" busca produtos que contenham AMBOS os termos)
+- ✅ Busca por código, descrição ou aplicação
+- ✅ Busca vazia com confirmação para listar todos os produtos
+- ✅ Seleção automática do primeiro resultado
+
+**Filtros Avançados:**
+- 📊 **Filtros de Estoque:**
+  - Positivo (≥1)
+  - Zerado (=0)
+  - Negativo (<0)
+- 🎯 **Filtros Especiais:**
+  - Apenas Ativos
+  - Abaixo do Mínimo (produtos que precisam reposição)
+  - Sem Preço (produtos sem preço cadastrado)
+  - Sem Aplicação (produtos sem aplicação cadastrada)
+- 🔤 **Filtro de Texto:** Busca rápida na lista por código, descrição ou marca
+- 🔄 **Botão "Mostrar Todos":** Reseta todos os filtros para o padrão
+
+**Tabela de Produtos:**
+- 📋 **10 Colunas Informativas:**
+  - Código do Produto
+  - Código Fabricante
+  - Descrição
+  - Estoque
+  - Valor de Venda
+  - Localização
+  - Última Compra
+  - Código Original
+  - Código de Barras
+  - Marca
+- ⬆️⬇️ **Ordenação por Coluna:** Clique no cabeçalho para ordenar (indicador visual ▲▼)
+- 📏 **Scroll Horizontal:** Visualize todas as colunas confortavelmente
+
+**Detalhes do Produto:**
+- 🖼️ **Imagem do Produto:**
+  - Miniatura fixa (150x150px) que não quebra o layout
+  - Clique para ampliar em janela popup (até 800x600px)
+  - Fecha com clique ou tecla ESC
+- 📝 **Aplicação:** Campo de texto com aplicações do produto
+- 🔗 **Produtos Similares:**
+  - Lista automática de produtos com mesma referência
+  - Exibe: Código, Cód. Fab., Descrição, Estoque, Preço, Marca
+  - Duplo clique para carregar similar na tela principal
+
+**Histórico de Compras:**
+- 📊 Últimas compras do produto selecionado
+- 💰 Preço médio calculado automaticamente
+- 📅 Data, Fornecedor, Quantidade, Preço Unitário e Nota Fiscal
+- 🔢 Seletor de quantidade (5, 10, 20 ou Todas)
+
+#### 🖥️ Interface
+
+- 🖼️ **Tela Cheia:** Janela maximizada para melhor aproveitamento do espaço
+- 📐 **Layout Horizontal:** Imagem | Aplicação | Similares (lado a lado)
+- 🎨 **Visual Moderno:** Cores e indicadores visuais para facilitar a leitura
+- ⚡ **Conexão Persistente:** Mantém conexão com banco durante toda a sessão
+
+#### 💡 Dicas de Uso
+
+1. **Busca Rápida:** Digite parte do código ou descrição e pressione Enter
+2. **Filtros Combinados:** Use múltiplos filtros simultaneamente para refinar resultados
+3. **Produtos para Comprar:** Marque "Abaixo do Mínimo" para ver o que precisa repor
+4. **Completar Cadastro:** Use "Sem Preço" ou "Sem Aplicação" para encontrar produtos incompletos
+5. **Similares:** Veja rapidamente produtos equivalentes de outras marcas
+6. **Ordenação:** Ordene por estoque para ver produtos zerados ou por preço para análise
 
 ### 📝 Editor SQL Integrado
 
