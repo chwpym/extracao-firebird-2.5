@@ -71,6 +71,11 @@ class ExtractorApp:
         for t in self.style.theme_names():
             theme_menu.add_command(label=t, command=lambda theme=t: self._apply_theme(theme))
         
+        # Menu Consultas
+        consultas_menu = tk.Menu(menubar, tearoff=0)
+        menubar.add_cascade(label="Consultas", menu=consultas_menu)
+        consultas_menu.add_command(label="🔍 Consultar Produto", command=self._open_produto_search)
+        
         # Menu Ajuda
         help_menu = tk.Menu(menubar, tearoff=0)
         menubar.add_cascade(label="Ajuda", menu=help_menu)
@@ -84,6 +89,11 @@ class ExtractorApp:
         from ui.sql_editor import SQLEditorWindow
         sql_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'sql')
         SQLEditorWindow(self.root, sql_dir)
+    
+    def _open_produto_search(self):
+        """Abre a janela de consulta de produtos"""
+        from consulta.produto_search import ProdutoSearchWindow
+        ProdutoSearchWindow(self.root)
     
     def _show_manual(self):
         """Abre o manual de uso"""

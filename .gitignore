@@ -30,3 +30,9 @@ __pycache__/
 # IDEs
 .vscode/
 .idea/
+
+# Temporary files
+CLEANUP.md
+test_*.py
+query_*.txt
+*_pagination.py
