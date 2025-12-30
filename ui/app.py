@@ -14,7 +14,9 @@ class ExtractorApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Extrator Firebird 2.5")
-        self.root.geometry("800x700")
+        
+        # Maximizar janela (fullscreen com botões de controle)
+        self.root.state('zoomed')
         
         # Preferências do usuário
         self.prefs = UserPreferences()
@@ -39,9 +41,6 @@ class ExtractorApp:
         
         self._create_widgets()
         self._create_menu()
-        
-        # Centralizar janela
-        self._center_window()
     
     def _center_window(self):
         """Centraliza a janela na tela"""
@@ -74,7 +73,13 @@ class ExtractorApp:
         # Menu Consultas
         consultas_menu = tk.Menu(menubar, tearoff=0)
         menubar.add_cascade(label="Consultas", menu=consultas_menu)
-        consultas_menu.add_command(label="🔍 Consultar Produto", command=self._open_produto_search)
+        consultas_menu.add_command(label="🔍 Consultar Produto (Detalhada)", command=self._open_produto_search)
+        consultas_menu.add_command(label="⚡ Consultar Produto (Rápida)", command=self._open_produto_listagem)
+        
+        # Menu Relatórios
+        relatorios_menu = tk.Menu(menubar, tearoff=0)
+        menubar.add_cascade(label="Relatórios", menu=relatorios_menu)
+        relatorios_menu.add_command(label="📍 Relatório de Localização", command=self._open_relatorio_localizacao)
         
         # Menu Ajuda
         help_menu = tk.Menu(menubar, tearoff=0)
@@ -91,9 +96,19 @@ class ExtractorApp:
         SQLEditorWindow(self.root, sql_dir)
     
     def _open_produto_search(self):
-        """Abre a janela de consulta de produtos"""
+        """Abre a janela de consulta de produtos (detalhada)"""
         from consulta.produto_search import ProdutoSearchWindow
         ProdutoSearchWindow(self.root)
+    
+    def _open_produto_listagem(self):
+        """Abre a janela de listagem rápida de produtos"""
+        from consulta.produto_listagem import ProdutoListagemWindow
+        ProdutoListagemWindow(self.root)
+    
+    def _open_relatorio_localizacao(self):
+        """Abre o relatório de localização"""
+        from relatorios.localizacao import RelatorioLocalizacaoWindow
+        RelatorioLocalizacaoWindow(self.root)
     
     def _show_manual(self):
         """Abre o manual de uso"""
