@@ -11,7 +11,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from core.database import FirebirdDB
 import config
 
-class ProdutoSearchWindow:
+class ProdutoListagemWindow:
     def __init__(self, parent):
         self.parent = parent
         self.db = None
@@ -19,7 +19,7 @@ class ProdutoSearchWindow:
         
         # Criar janela
         self.window = tk.Toplevel(parent)
-        self.window.title("Consulta de Produtos")
+        self.window.title("Consulta de Produtos (Rápida)")
         
         # Tela cheia
         self.window.state('zoomed')  # Maximizado no Windows
@@ -284,65 +284,6 @@ class ProdutoSearchWindow:
         # Duplo clique para carregar similar
         self.tree_similares.bind('<Double-1>', self._carregar_similar)
         
-        # ===== HISTÓRICO DE COMPRAS =====
-        historico_frame = ttk.LabelFrame(main_frame, text="Histórico de Compras", padding="10")
-        historico_frame.pack(fill=tk.BOTH, expand=True)
-        
-        # Controles do histórico
-        controles_frame = ttk.Frame(historico_frame)
-        controles_frame.pack(fill=tk.X, pady=(0, 10))
-        
-        ttk.Label(controles_frame, text="Mostrar:").pack(side=tk.LEFT, padx=5)
-        
-        self.qtd_compras_var = tk.StringVar(value="5")
-        qtd_combo = ttk.Combobox(controles_frame, textvariable=self.qtd_compras_var,
-                                 values=["5", "10", "20", "Todas"], width=10, state='readonly')
-        qtd_combo.pack(side=tk.LEFT, padx=5)
-        qtd_combo.bind('<<ComboboxSelected>>', lambda e: self._atualizar_historico())
-        
-        ttk.Label(controles_frame, text="compras").pack(side=tk.LEFT, padx=5)
-        
-        # Label de preço médio
-        self.lbl_preco_medio = ttk.Label(controles_frame, text="Preço Médio: R$ 0,00",
-                                         font=("Arial", 10, "bold"), foreground="darkgreen")
-        self.lbl_preco_medio.pack(side=tk.RIGHT, padx=10)
-        
-        # Tabela de histórico
-        hist_table_frame = ttk.Frame(historico_frame)
-        hist_table_frame.pack(fill=tk.BOTH, expand=True)
-        
-        vsb2 = ttk.Scrollbar(hist_table_frame, orient="vertical")
-        hsb2 = ttk.Scrollbar(hist_table_frame, orient="horizontal")
-        
-        self.tree_historico = ttk.Treeview(hist_table_frame,
-                                           columns=("data", "fornecedor", "qtd", "preco", "nf"),
-                                           show="headings",
-                                           yscrollcommand=vsb2.set,
-                                           xscrollcommand=hsb2.set,
-                                           height=6)
-        
-        vsb2.config(command=self.tree_historico.yview)
-        hsb2.config(command=self.tree_historico.xview)
-        
-        # Colunas
-        self.tree_historico.heading("data", text="Data")
-        self.tree_historico.heading("fornecedor", text="Fornecedor")
-        self.tree_historico.heading("qtd", text="Qtd")
-        self.tree_historico.heading("preco", text="Preço Unit.")
-        self.tree_historico.heading("nf", text="Nota Fiscal")
-        
-        self.tree_historico.column("data", width=100, anchor=tk.CENTER)
-        self.tree_historico.column("fornecedor", width=300, anchor=tk.W)
-        self.tree_historico.column("qtd", width=80, anchor=tk.CENTER)
-        self.tree_historico.column("preco", width=100, anchor=tk.E)
-        self.tree_historico.column("nf", width=150, anchor=tk.W)
-        
-        self.tree_historico.grid(row=0, column=0, sticky="nsew")
-        vsb2.grid(row=0, column=1, sticky="ns")
-        hsb2.grid(row=1, column=0, sticky="ew")
-        
-        hist_table_frame.grid_rowconfigure(0, weight=1)
-        hist_table_frame.grid_columnconfigure(0, weight=1)
         
         # Botão fechar
         ttk.Button(main_frame, text="Fechar", command=self._on_close).pack(pady=10)
@@ -351,15 +292,7 @@ class ProdutoSearchWindow:
         """Busca produtos no banco de dados"""
         termo_busca = self.search_var.get().strip()
         
-        # Exigir texto para buscar (evita travamento com histórico)
-        if not termo_busca:
-            messagebox.showwarning(
-                "Busca Vazia", 
-                "Digite algo para buscar.\n\n" +
-                "Para listar todos os produtos rapidamente,\n" +
-                "use: Menu → Consultar → Produtos (Rápida)"
-            )
-            return
+        # Permitir busca vazia para listar tudo (sem histórico = rápido!)
         
         # Limpar tabela
         for item in self.tree.get_children():
@@ -392,12 +325,10 @@ class ProdutoSearchWindow:
                 # Busca vazia = buscar tudo
                 where_clause = "1=1"
             
-            # Query que busca em DESCRIÇÃO e APLICAÇÃO
-            # LIMIT 100 para performance (busca por código não tem limite)
-            limit_clause = "" if self.busca_codigo_var.get() else "FIRST 100"
-            
+            # Query SIMPLIFICADA - SEM histórico de compras (muito mais rápida!)
+            # Sem LIMIT - lista TODOS os produtos
             query = f"""
-            SELECT {limit_clause} 
+            SELECT 
                 PROD_CODIGO,
                 PROD_CODIGOFABRICANTE,
                 PROD_DESCRICAOPRODUTO,
@@ -409,13 +340,7 @@ class ProdutoSearchWindow:
                 PROD_CODIGOORIGINAL,
                 PROD_REFERENCIA,
                 PROD_MINIMO,
-                PROD_APLICACAO,
-                PROD_UNIDADE,
-                (SELECT FIRST 1 e.ENT_DATAENTRADA 
-                 FROM ENTITENS ei 
-                 JOIN ENTRADA e ON ei.ENT_NUMEROOPERACAO = e.ENT_NUMEROOPERACAO 
-                 WHERE ei.PROD_CODIGO = PRODUTO.PROD_CODIGO 
-                 ORDER BY e.ENT_DATAENTRADA DESC) AS ULT_COMPRA
+                PROD_APLICACAO
             FROM PRODUTO
             WHERE {where_clause}
             ORDER BY PROD_DESCRICAOPRODUTO
@@ -431,11 +356,8 @@ class ProdutoSearchWindow:
                 self._limpar_dados()
                 return
             
-            # Preencher tabela
+            # Preencher tabela (SEM última compra)
             for idx, row in df.iterrows():
-                ult_compra = row.get('ULT_COMPRA')
-                ult_compra_str = ult_compra.strftime('%d/%m/%Y') if pd.notna(ult_compra) else '-'
-                
                 self.tree.insert('', 'end', values=(
                     row['PROD_CODIGO'],
                     row.get('PROD_CODIGOFABRICANTE', '-') or '-',
@@ -443,8 +365,8 @@ class ProdutoSearchWindow:
                     row.get('PROD_QTDEESTOQUEFISICO', 0) or 0,
                     f"R$ {row.get('PROD_PRECOAVISTA', 0) or 0:,.2f}",
                     row.get('PROD_LOCALIZACAOPECA', '-') or '-',
-                    ult_compra_str,
-                    row.get('PROD_CODIGOORIGINAL', '-') or '-',  # Código Original
+                    '-',  # Sem última compra (listagem rápida)
+                    row.get('PROD_CODIGOORIGINAL', '-') or '-',
                     row.get('PROD_CODIGOBARRA', '-') or '-',
                     row.get('PROD_MARCA', '-') or '-'
                 ), tags=(str(row['PROD_CODIGO']),))  # Usar código como tag
@@ -452,15 +374,7 @@ class ProdutoSearchWindow:
             # Armazenar DataFrame para uso posterior
             self.df_produtos = df
             
-            # Avisar se atingiu o limite
-            if len(df) == 100 and not self.busca_codigo_var.get():
-                messagebox.showwarning(
-                    "Resultados Limitados", 
-                    "Mostrando apenas os primeiros 100 produtos.\n\n" +
-                    "Para ver todos os resultados:\n" +
-                    "• Use filtros mais específicos\n" +
-                    "• Marque 'Busca por Código Interno' para busca exata"
-                )
+
             
             # Selecionar primeiro item automaticamente
             if len(self.tree.get_children()) > 0:
@@ -490,9 +404,6 @@ class ProdutoSearchWindow:
         
         # Carregar imagem
         self._carregar_imagem(produto['PROD_CODIGO'])
-        
-        # Atualizar histórico
-        self._atualizar_historico()
         
         # Atualizar similares
         self._atualizar_similares(produto.get('PROD_REFERENCIA', ''))
@@ -622,10 +533,7 @@ class ProdutoSearchWindow:
                 if aplicacao:
                     continue
             
-            # Adicionar à tabela
-            ult_compra = row.get('ULT_COMPRA')
-            ult_compra_str = ult_compra.strftime('%d/%m/%Y') if pd.notna(ult_compra) else '-'
-            
+            # Adicionar à tabela (SEM última compra)
             self.tree.insert('', 'end', values=(
                 row['PROD_CODIGO'],
                 row.get('PROD_CODIGOFABRICANTE', '-') or '-',
@@ -633,7 +541,7 @@ class ProdutoSearchWindow:
                 estoque,
                 f"R$ {preco:,.2f}",
                 row.get('PROD_LOCALIZACAOPECA', '-') or '-',
-                ult_compra_str,
+                '-',  # Sem última compra (listagem rápida)
                 row.get('PROD_CODIGOORIGINAL', '-') or '-',
                 row.get('PROD_CODIGOBARRA', '-') or '-',
                 row.get('PROD_MARCA', '-') or '-'
