@@ -29,7 +29,8 @@ migracao_firebird/
 │   └── help_window.py  # Sistema de ajuda
 ├── utils/              # Utilitários
 │   ├── logger.py       # Sistema de logs
-│   └── preferences.py  # Gerenciamento de preferências (temas)
+│   ├── preferences.py  # Gerenciamento de preferências (temas)
+│   └── migracao_helpers.py  # Utilitários para migração de dados
 ├── tools/              # Scripts auxiliares de diagnóstico
 ├── sql/                # Consultas SQL customizáveis
 │   └── query_library.json  # Biblioteca de queries salvas
@@ -161,6 +162,29 @@ Interface completa para consulta e análise de produtos com recursos avançados:
 4. **Completar Cadastro:** Use "Sem Preço" ou "Sem Aplicação" para encontrar produtos incompletos
 5. **Similares:** Veja rapidamente produtos equivalentes de outras marcas
 6. **Ordenação:** Ordene por estoque para ver produtos zerados ou por preço para análise
+
+#### 📋 Copiar para Migração
+
+**Botão: "📋 Copiar p/ Migração"**
+
+Funcionalidade especial para facilitar a migração de dados para novos sistemas:
+
+- **O que faz:** Combina a aplicação do produto com o código original em um único texto
+- **Formato:** `[APLICAÇÃO] - ORIG: [CÓDIGO_ORIGINAL]`
+- **Como usar:**
+  1. Selecione um produto na lista
+  2. Clique em "📋 Copiar p/ Migração"
+  3. Uma janela popup mostra o texto formatado
+  4. Use **Ctrl+C** para copiar manualmente
+  5. Cole no campo de aplicação do novo sistema
+
+**💡 Dica:** Devido a limitações do Windows Clipboard History, recomendamos copiar manualmente usando Ctrl+C ao invés de usar o botão automático.
+
+**Exemplo de saída:**
+```
+FIAT PALIO / SIENA / STRADA - MOTOR 1.0 / 1.4 - ORIG: 7087241/93385042
+```
+
 
 ### 📝 Editor SQL Integrado
 

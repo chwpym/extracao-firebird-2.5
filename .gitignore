@@ -36,3 +36,20 @@ CLEANUP.md
 test_*.py
 query_*.txt
 *_pagination.py
+
+# Build executável
+build/
+dist/
+*.spec
+build_exe.bat
+
+# Documentação de desenvolvimento
+BUILD_EXECUTABLE.md
+EXECUTAVEL_GERADO.md
+BACKUP_CHECKLIST.md
+
+# Scripts e análises temporárias
+analise_tabelas.py
+scripts/
+ui/*_temp_*.txt
+ui/_otimizar_*.py

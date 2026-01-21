@@ -10,6 +10,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from core.database import FirebirdDB
 import config
+from utils import migracao_helpers
 
 class ProdutoSearchWindow:
     def __init__(self, parent):
@@ -148,9 +149,12 @@ class ProdutoSearchWindow:
         # Separador
         ttk.Separator(filter_line2, orient=tk.VERTICAL).pack(side=tk.LEFT, fill=tk.Y, padx=10)
         
-        # Botão "Mostrar Todos"
+        # Botões de Ação
         ttk.Button(filter_line2, text="🔄 Mostrar Todos", 
                   command=self._resetar_filtros).pack(side=tk.LEFT, padx=5)
+        
+        ttk.Button(filter_line2, text="📋 Copiar p/ Migração", 
+                  command=self._copiar_para_migracao).pack(side=tk.LEFT, padx=5)
         
         # Tabela de produtos
         table_frame = ttk.Frame(produtos_frame)
@@ -234,7 +238,7 @@ class ProdutoSearchWindow:
         aplicacao_frame = ttk.LabelFrame(detalhes_frame, text="Aplicação", padding="10")
         aplicacao_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(0, 10))
         
-        self.txt_aplicacao = ScrolledText(aplicacao_frame, height=8, wrap=tk.WORD, font=("Arial", 9))
+        self.txt_aplicacao = ScrolledText(aplicacao_frame, height=8, wrap=tk.WORD, font=("Arial", 9), exportselection=False)
         self.txt_aplicacao.pack(fill=tk.BOTH, expand=True)
         self.txt_aplicacao.config(state=tk.DISABLED)
         
@@ -883,6 +887,24 @@ class ProdutoSearchWindow:
                 
         except Exception as e:
             messagebox.showerror("Erro", f"Erro ao carregar histórico:\n{str(e)}")
+
+    def _copiar_para_migracao(self):
+        """Copia a aplicação + código original usando popup personalizado"""
+        selection = self.tree.selection()
+        if not selection:
+            messagebox.showwarning("Aviso", "Selecione um produto na lista primeiro.")
+            return
+            
+        try:
+            item = self.tree.item(selection[0])
+            prod_codigo = int(item['tags'][0])
+            produto = self.df_produtos[self.df_produtos['PROD_CODIGO'] == prod_codigo].iloc[0]
+            
+            # Usar a função centralizada do migracao_helpers que mostra popup com botão copiar
+            migracao_helpers.mostrar_popup_migracao(self.window, produto)
+            
+        except Exception as e:
+            messagebox.showerror("Erro", f"Erro ao processar cópia:\n{str(e)}")
     
     def _limpar_dados(self):
         """Limpa os dados exibidos"""

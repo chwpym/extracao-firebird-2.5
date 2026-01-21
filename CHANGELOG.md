@@ -1,3 +1,40 @@
+# 📋 Funcionalidade de Migração - v1.0
+
+## ✨ Nova Funcionalidade: Copiar para Migração
+
+### 🎯 Objetivo
+Facilitar a migração de dados para novos sistemas que não possuem campo separado para código original, combinando aplicação e código original em um único texto.
+
+### 🚀 Implementação
+- ✅ Módulo `utils/migracao_helpers.py` criado
+- ✅ Função `formatar_texto_migracao()` - Formata texto com aplicação + código original
+- ✅ Função `copiar_para_clipboard()` - Copia usando API nativa do Windows
+- ✅ Função `mostrar_popup_migracao()` - Popup personalizado com texto formatado
+- ✅ Botão "📋 Copiar p/ Migração" em `produto_search.py` e `produto_listagem.py`
+
+### 🛠️ Melhorias Técnicas
+- ✅ Suporte a campos BLOB do Firebird
+- ✅ Remoção de quebras de linha para evitar problemas
+- ✅ Uso de `win32clipboard` (API nativa do Windows)
+- ✅ Campo de aplicação com `exportselection=False` para prevenir sobrescrita de clipboard
+- ✅ Logs de debug removidos para console limpo
+
+### 📝 Documentação
+- ✅ README.md atualizado com seção "📋 Copiar para Migração"
+- ✅ Instruções de uso passo a passo
+- ✅ Exemplo de saída formatada
+- ✅ Dica sobre cópia manual com Ctrl+C
+
+### 🔧 Dependências
+```bash
+pip install pywin32
+```
+
+### 💡 Solução para Problema de Clipboard
+Descoberto que Windows Clipboard History pode truncar texto automaticamente. Solução: copiar manualmente com Ctrl+C no popup.
+
+---
+
 # 🎉 Consulta de Produtos - Implementação Completa
 
 ## ✨ Funcionalidades Implementadas
