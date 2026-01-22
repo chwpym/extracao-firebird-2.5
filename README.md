@@ -186,6 +186,146 @@ FIAT PALIO / SIENA / STRADA - MOTOR 1.0 / 1.4 - ORIG: 7087241/93385042
 ```
 
 
+### � Consulta de Vendas (Pedidos)
+
+**Menu: Consultas → Consultar Vendas**
+
+Interface completa para consultar e analisar pedidos de venda com busca rápida e detalhamento completo:
+
+#### 🎯 Funcionalidades Principais
+
+**Busca Rápida:**
+- 🔢 **Por Número de Operação** - Busca direta pelo número do pedido
+- 📅 **Por Cliente** - Busca por código ou nome do cliente
+- 📆 **Por Intervalo de Datas** - Filtra vendas por período
+
+**Tabela de Pedidos (11 colunas):**
+- Nº Operação, Data Venda, Cliente
+- Vendedor, Placa, Modelo Veículo
+- Valores: Total, Desconto, Líquido
+- Natureza, Observação
+- ⬆️⬇️ **Ordenação por coluna** com indicador visual
+
+**Detalhes do Pedido:**
+- 📋 Informações completas do cliente e vendedor
+- 🚗 Dados do veículo (placa, modelo, ano, km)
+- 💰 Valores detalhados (total, desconto, líquido)
+- 📝 Observações e natureza da venda
+
+**Itens do Pedido:**
+- 📦 Tabela de produtos vendidos com 8 colunas:
+  - Código, Descrição
+  - Qtde, Vl. Unit., Vl. Total
+  - % IPI, Reajuste, Vl. Venda
+
+#### 🖥️ Interface
+
+- 📐 **Janela 1400x800** centralizada
+- 🎨 **Layout organizado** (busca → tabela → detalhes → itens)
+- 📅 **Auto-formatação de datas** (DD/MM/AAAA)
+- ⚡ **Conexão persistente** durante toda a sessão
+
+
+### �📦 Consulta de Entrada de NF (Novo!)
+
+**Menu: Consultas → Entrada de NF**
+
+Interface completa para consultar e analisar entradas de notas fiscais com múltiplas formas de busca:
+
+#### 🎯 Funcionalidades Principais
+
+**4 Formas de Busca:**
+- 🔢 **Por Número de Pedido** - Busca direta pelo número do pedido
+- 📄 **Por Número de Nota Fiscal** - Localiza pela NF
+- 🏭 **Por Fornecedor** - Busca por código ou nome do fornecedor + período
+  - Busca por código numérico (ex: `152`)
+  - Busca por nome com múltiplas palavras (ex: `HAIFER PRETO`)
+- 📅 **Por Intervalo de Datas** - Filtra por período específico
+
+**Tabela de Resultados (13 colunas):**
+- Operação, Nota Fiscal, **Código Fornecedor**, Fornecedor
+- Data Entrada, Tipo Entrada
+- Valores: Frete, IPI, ICMS, Desconto, Total
+- Status Nota, Pedido
+- ⬆️⬇️ **Ordenação por coluna** com indicador visual
+
+**Detalhes da Entrada:**
+- 📋 Informações completas do fornecedor
+- 💰 Valores detalhados (IPI, ICMS, Frete, Total)
+- 📊 Status e tipo da entrada
+
+**Itens da Entrada:**
+- 📦 Tabela de produtos com 9 colunas:
+  - Código, Descrição, Qtde, Vl. Unit., % IPI
+  - Reajuste, Vl Venda, NCM, Vl. Total
+
+#### 🖥️ Interface
+
+- 📐 **Janela 1500x800** centralizada
+- 🎨 **Layout organizado** (busca → tabela → detalhes → itens)
+- 📅 **Auto-formatação de datas** (DD/MM/AAAA) com cursor inteligente
+- ⚡ **Conexão persistente** durante toda a sessão
+
+
+### 💰 Relatório de Faturamento por Cliente (Novo!)
+
+**Menu: Relatórios → Faturamento por Cliente**
+
+Relatório completo de vendas por cliente com filtros avançados e exportação para PDF:
+
+#### 🎯 Funcionalidades Principais
+
+**Busca Flexível:**
+- 👤 **Por Cliente:**
+  - Código numérico (ex: `834`)
+  - Nome com múltiplas palavras (ex: `JULIO CEZAR`)
+- 📅 **Período:** Data inicial e final com auto-formatação
+- 💳 **Filtro de Pagamento:**
+  - 🔘 **Todos** - Todas as vendas do período
+  - 🔘 **Pagos** - Apenas vendas quitadas
+  - 🔘 **Não Pagos** - Apenas vendas em aberto
+
+**Tabela de Vendas (7 colunas):**
+- Código Produto, Descrição Produto
+- Pedido, Data Venda
+- Qtde, Vl. Unitário, Vl. Total
+- 📊 **Totais no rodapé** (quantidade e valor)
+
+**Exportação para PDF:**
+- 📄 **Formato retrato** (A4)
+- 🎨 **Cabeçalho profissional** com dados da empresa
+- 📋 **Tabela formatada** com todas as vendas
+- 💰 **Totais destacados** no rodapé
+- 💾 **Nome sugestivo** automático
+- 🚀 **Opção de abrir** automaticamente após geração
+
+#### ⚡ Otimização de Performance
+
+**Menu: Ferramentas → Otimizar Performance do Faturamento**
+
+Cria índices no banco de dados para melhorar significativamente a performance:
+
+**Índices criados:**
+- `IDX_PEDIDO_CLIENTE` - Busca rápida por cliente
+- `IDX_PEDIDO_DATA` - Filtro eficiente por período
+- `IDX_RECEBER_PEDIDO` - JOIN otimizado com contas a receber
+- `IDX_RECEBTO_RECOP` - Verificação rápida de pagamento
+
+**Ganho esperado:** 
+- Sem índices: 6-11 segundos
+- Com índices: < 2 segundos (em SSD)
+- **Nota:** Performance depende do hardware (HD vs SSD)
+
+**💡 Dica:** Execute esta otimização sempre que copiar o banco para um novo ambiente!
+
+#### 🖥️ Interface
+
+- 📐 **Janela 1400x800** centralizada
+- 🎨 **Layout em duas seções** (busca e resultados)
+- 📅 **Datas padrão** (primeiro dia do mês até hoje)
+- 💾 **Diálogo de salvamento** com nome sugestivo
+
+
 ### 📝 Editor SQL Integrado
 
 **Menu: Configurar → Editar Consultas SQL**

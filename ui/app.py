@@ -41,6 +41,7 @@ class ExtractorApp:
         menubar.add_cascade(label="Ferramentas", menu=tools_menu)
         tools_menu.add_command(label="🚀 Extração de Dados Firebird", command=self._open_extracao)
         tools_menu.add_command(label="⚡ Otimizar Performance do Kardex", command=self._otimizar_kardex)
+        tools_menu.add_command(label="💰 Otimizar Performance do Faturamento", command=self._otimizar_faturamento)
         
         # Menu Consultas
         consultas_menu = tk.Menu(menubar, tearoff=0)
@@ -52,11 +53,14 @@ class ExtractorApp:
         consultas_menu.add_command(label="⚡ Consultar Produto (Rápida)", command=self._open_produto_listagem)
         consultas_menu.add_separator()
         consultas_menu.add_command(label="📊 Consultar Movimentações (Kardex)", command=self._open_movimentacao_search)
+        consultas_menu.add_command(label="💰 Consultar Vendas (Pedidos)", command=self._open_pedido_search)
+        consultas_menu.add_command(label="📦 Consultar Entrada de NF", command=self._open_entrada_nf_search)
         
         # Menu Relatórios
         relatorios_menu = tk.Menu(menubar, tearoff=0)
         menubar.add_cascade(label="Relatórios", menu=relatorios_menu)
         relatorios_menu.add_command(label="📍 Relatório de Localização", command=self._open_relatorio_localizacao)
+        relatorios_menu.add_command(label="💰 Faturamento por Cliente", command=self._open_faturamento_cliente)
         
         # Menu Temas
         theme_menu = tk.Menu(menubar, tearoff=0)
@@ -98,6 +102,8 @@ class ExtractorApp:
             ("👥 Consultar\nClientes", self._open_cliente_search),
             ("🏭 Consultar\nFornecedores", self._open_fornecedor_search),
             ("🔍 Consultar\nProduto", self._open_produto_search),
+            ("💰 Consultar\nVendas", self._open_pedido_search),
+            ("📦 Consultar\nEntrada de NF", self._open_entrada_nf_search),
             ("📍 Relatório\nLocalização", self._open_relatorio_localizacao)
         ]
         
@@ -159,6 +165,47 @@ class ExtractorApp:
                 messagebox.showerror("Erro", str(e))
         
         threading.Thread(target=executar, daemon=True).start()
+    
+    def _otimizar_faturamento(self):
+        import subprocess
+        import threading
+        from tkinter import messagebox
+        
+        resposta = messagebox.askyesno(
+            "Otimizar Performance do Faturamento",
+            "Esta operação irá criar índices no banco de dados para melhorar a performance do Relatório de Faturamento.\\n\\nDeseja continuar?"
+        )
+        if not resposta: return
+        
+        progress_window = tk.Toplevel(self.root)
+        progress_window.title("Otimizando...")
+        progress_window.geometry("400x150")
+        progress_window.transient(self.root)
+        progress_window.grab_set()
+        
+        # Centralizar
+        self.root.update_idletasks()
+        x = (self.root.winfo_screenwidth() // 2) - 200
+        y = (self.root.winfo_screenheight() // 2) - 75
+        progress_window.geometry(f"+{x}+{y}")
+        
+        tk.Label(progress_window, text="Criando índices no banco de dados...", font=("Arial", 10)).pack(pady=30)
+        
+        def executar():
+            try:
+                base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+                script_path = os.path.join(base_dir, 'scripts', 'otimizar_faturamento.py')
+                result = subprocess.run(['python', script_path], capture_output=True, text=True, cwd=base_dir)
+                progress_window.destroy()
+                if result.returncode == 0:
+                    messagebox.showinfo("Sucesso", "Índices criados com sucesso!\\nA performance do Relatório de Faturamento deve melhorar significativamente.")
+                else:
+                    messagebox.showerror("Erro", f"Erro: {result.stderr or result.stdout}")
+            except Exception as e:
+                if progress_window.winfo_exists(): progress_window.destroy()
+                messagebox.showerror("Erro", str(e))
+        
+        threading.Thread(target=executar, daemon=True).start()
 
     def _open_produto_search(self):
         from consulta.produto_search import ProdutoSearchWindow
@@ -176,6 +223,14 @@ class ExtractorApp:
         from consulta.movimentacao_search import MovimentacaoSearchWindow
         MovimentacaoSearchWindow(self.root)
     
+    def _open_pedido_search(self):
+        from consulta.pedido_search import PedidoSearchWindow
+        PedidoSearchWindow(self.root)
+    
+    def _open_entrada_nf_search(self):
+        from consulta.entrada_nf_search import EntradaNFSearchWindow
+        EntradaNFSearchWindow(self.root)
+    
     def _open_produto_listagem(self):
         from consulta.produto_listagem import ProdutoListagemWindow
         ProdutoListagemWindow(self.root)
@@ -183,6 +238,10 @@ class ExtractorApp:
     def _open_relatorio_localizacao(self):
         from relatorios.localizacao import RelatorioLocalizacaoWindow
         RelatorioLocalizacaoWindow(self.root)
+    
+    def _open_faturamento_cliente(self):
+        from relatorios.faturamento_cliente import FaturamentoClienteWindow
+        FaturamentoClienteWindow(self.root)
     
     def _show_manual(self):
         from ui.help_window import HelpWindow
