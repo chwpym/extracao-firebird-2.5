@@ -1,0 +1,46 @@
+{
+  "📋 Listar Todas as Tabelas": {
+    "description": "Lista todas as tabelas do banco de dados",
+    "sql": "SELECT RDB$RELATION_NAME AS TABELA\nFROM RDB$RELATIONS\nWHERE RDB$SYSTEM_FLAG = 0\nORDER BY RDB$RELATION_NAME"
+  },
+  "🔍 Ver Estrutura de Tabela": {
+    "description": "Mostra colunas de uma tabela específica (substitua NOME_TABELA)",
+    "sql": "SELECT\n    RF.RDB$FIELD_NAME AS COLUNA,\n    CASE F.RDB$FIELD_TYPE\n        WHEN 7 THEN 'SMALLINT'\n        WHEN 8 THEN 'INTEGER'\n        WHEN 10 THEN 'FLOAT'\n        WHEN 12 THEN 'DATE'\n        WHEN 13 THEN 'TIME'\n        WHEN 14 THEN 'CHAR'\n        WHEN 16 THEN 'BIGINT'\n        WHEN 27 THEN 'DOUBLE'\n        WHEN 35 THEN 'TIMESTAMP'\n        WHEN 37 THEN 'VARCHAR'\n        WHEN 261 THEN 'BLOB'\n        ELSE 'UNKNOWN'\n    END AS TIPO,\n    F.RDB$FIELD_LENGTH AS TAMANHO,\n    RF.RDB$NULL_FLAG AS OBRIGATORIO\nFROM RDB$RELATION_FIELDS RF\nJOIN RDB$FIELDS F ON RF.RDB$FIELD_SOURCE = F.RDB$FIELD_NAME\nWHERE RF.RDB$RELATION_NAME = 'NOME_TABELA'\nORDER BY RF.RDB$FIELD_POSITION"
+  },
+  "📊 Contar Registros de Todas as Tabelas": {
+    "description": "Conta quantos registros existem em cada tabela",
+    "sql": "SELECT 'CLIENTE' AS TABELA, COUNT(*) AS REGISTROS FROM CLIENTE\nUNION ALL\nSELECT 'PRODUTO', COUNT(*) FROM PRODUTO\nUNION ALL\nSELECT 'FORNECEDOR', COUNT(*) FROM FORNECEDOR"
+  },
+  "🔍 Diagnóstico: Estrutura da RECEBTO": {
+    "description": "Lista colunas e tipos da tabela de pagamentos (RECEBTO)",
+    "sql": "SELECT \n    RF.RDB$FIELD_NAME AS COLUNA, \n    F.RDB$FIELD_TYPE AS TIPO \nFROM RDB$RELATION_FIELDS RF \nJOIN RDB$FIELDS F ON RF.RDB$FIELD_SOURCE = F.RDB$FIELD_NAME \nWHERE RF.RDB$RELATION_NAME = 'RECEBTO' \nORDER BY RF.RDB$FIELD_POSITION"
+  },
+  "🔍 Diagnóstico: Estrutura da RECEBER/RECDET": {
+    "description": "Lista colunas das tabelas de contas a receber",
+    "sql": "SELECT 'RECEBER' as TABELA, RDB$FIELD_NAME as COLUNA FROM RDB$RELATION_FIELDS WHERE RDB$RELATION_NAME = 'RECEBER'\nUNION ALL\nSELECT 'RECDET', RDB$FIELD_NAME FROM RDB$RELATION_FIELDS WHERE RDB$RELATION_NAME = 'RECDET'"
+  },
+  "👤 Diagnóstico: Documentos de Cliente (ID :codigo)": {
+    "description": "Verifica CPF/CNPJ e Tipo de Pessoa de um cliente específico",
+    "sql": "SELECT CLI_CODIGO, CLI_NOME, CLI_CPF, CLI_CNPJ, CLI_PESSOAFISICAJURIDICA \nFROM CLIENTE \nWHERE CLI_CODIGO = :codigo"
+  },
+  "⚡ Teste Rápido: Contas a Receber (Top 20)": {
+    "description": "Amostra ultrarrápida dos primeiros 20 registros de contas a receber",
+    "sql": "SELECT FIRST 20 \n    '1' AS \"Empresa\", \n    r.REC_NUMEROPEDIDO AS \"Número da Duplicata\", \n    r.REC_NUMERONOTAFISCAL AS \"Número da NF\", \n    r.CLI_CODIGO AS \"Código do Cliente\", \n    COALESCE(NULLIF(TRIM(c.CLI_CPF), ''), NULLIF(TRIM(c.CLI_CNPJ), '')) AS \"CNPJ/CPF\", \n    c.CLI_NOME AS \"Descrição do Cliente\", \n    d.RED_PARCELA AS \"Parcela da Duplicata\", \n    r.REC_DATAEMISSAO AS \"Data de Movimento\", \n    d.RED_DATAVENCIMENTO AS \"Data de Vencimento\", \n    d.RED_VALORPARCELA AS \"Valor da Duplicata\", \n    '' AS \"Ocorrência\", \n    COALESCE(ult_rec.TPF_SIGLA, '') AS \"Forma de Pagamento\", \n    COALESCE(ult_rec.REB_DESCONTO, 0) AS \"Desconto\", \n    COALESCE(ult_rec.REB_JUROS + COALESCE(ult_rec.REB_MULTA, 0), 0) AS \"Valor Juros Cobrado\", \n    0 AS \"% Juros Mora Diário\", \n    d.RED_VALORRECEBIDO AS \"Valor Pago\", \n    ult_rec.REB_DATARECEBIMENTO AS \"Data de Pagamento\", \n    d.RED_NUMEROBOLETO AS \"Nosso Número\" \nFROM RECDET d \nJOIN RECEBER r ON d.REC_NUMEROOPERACAO = r.REC_NUMEROOPERACAO \nLEFT JOIN CLIENTE c ON c.CLI_CODIGO = r.CLI_CODIGO \nLEFT JOIN (SELECT rt.REC_NUMEROOPERACAO, rt.RED_PARCELA, MAX(rt.REB_DATARECEBIMENTO) as REB_DATARECEBIMENTO, MAX(rt.TPF_SIGLA) as TPF_SIGLA, SUM(rt.REB_DESCONTO) as REB_DESCONTO, SUM(rt.REB_JUROS) as REB_JUROS, SUM(rt.REB_MULTA) as REB_MULTA FROM RECEBTO rt GROUP BY rt.REC_NUMEROOPERACAO, rt.RED_PARCELA) ult_rec ON ult_rec.REC_NUMEROOPERACAO = d.REC_NUMEROOPERACAO AND ult_rec.RED_PARCELA = d.RED_PARCELA\nWHERE (d.RED_VALORRECEBIDO < d.RED_VALORPARCELA)"
+  },
+  "👥 Extração: Clientes": {
+    "description": "Extrai todos os clientes cadastrados",
+    "sql": "SELECT\n    CLI_CODIGO,\n    CLI_NOME,\n    CLI_LOGRADOUROENDERECO,\n    CLI_BAIRRO,\n    CLI_CIDADE,\n    CLI_UF,\n    CLI_CEP,\n    CLI_TELEFONE,\n    CLI_CELULAR,\n    CLI_EMAIL,\n    CLI_CPF,\n    CLI_CNPJ,\n    CLI_RG,\n    CLI_INSCRICAOESTADUAL,\n    CLI_DATACADASTRO\nFROM CLIENTE\nORDER BY CLI_NOME"
+  },
+  "📦 Extração: Produtos": {
+    "description": "Extrai todos os produtos cadastrados",
+    "sql": "SELECT\n    PROD_CODIGO,\n    PROD_DESCRICAOPRODUTO,\n    PROD_UNIDADE,\n    PROD_PRECOCUSTO,\n    PROD_PRECOVENDA,\n    PROD_ESTOQUEATUAL,\n    PROD_ESTOQUEMINIMO,\n    PROD_CODIGOBARRA,\n    PROD_ATIVO\nFROM PRODUTO\nORDER BY PROD_DESCRICAOPRODUTO"
+  },
+  "🏭 Extração: Fornecedores": {
+    "description": "Extrai todos os fornecedores cadastrados",
+    "sql": "SELECT\n    FOR_CODIGO,\n    FOR_NOME,\n    FOR_LOGRADOUROENDERECO,\n    FOR_BAIRRO,\n    FOR_CIDADE,\n    FOR_UF,\n    FOR_CEP,\n    FOR_TELEFONE,\n    FOR_EMAIL,\n    FOR_CNPJ,\n    FOR_INSCRICAOESTADUAL\nFROM FORNECEDOR\nORDER BY FOR_NOME"
+  },
+  "📊 Movimentações: Kardex Completo": {
+    "description": "Relatório unificado de entradas e saídas (use :DATA_INI e :DATA_FIM)",
+    "sql": "SELECT\n    mov.PROD_CODIGO AS \"COD_PRODUTO\",\n    prod.PROD_DESCRICAOPRODUTO AS \"DESCRICAO\",\n    mov.DATA_MOV AS \"DATA\",\n    mov.TIPO,\n    mov.DOCUMENTO,\n    mov.ENTIDADE_COD AS \"COD_ENTIDADE\",\n    mov.ENTIDADE_NOME AS \"NOME_ENTIDADE\",\n    mov.QTDE,\n    mov.VALOR_UNIT,\n    mov.TOTAL\nFROM (\n    SELECT\n        i.PROD_CODIGO,\n        p.PED_DATAVENDA as DATA_MOV,\n        'SAIDA (VI)' as TIPO,\n        CAST(p.PED_NUMEROPEDIDO AS VARCHAR(20)) as DOCUMENTO,\n        p.CLI_CODIGO as ENTIDADE_COD,\n        c.CLI_NOME as ENTIDADE_NOME,\n        i.PIT_QTDEVENDIDA as QTDE,\n        i.PIT_VALORUNITARIO as VALOR_UNIT,\n        (i.PIT_QTDEVENDIDA * i.PIT_VALORUNITARIO) as TOTAL\n    FROM PEDITENS i\n    JOIN PEDIDO p ON i.PED_NUMEROOPERACAO = p.PED_NUMEROOPERACAO\n    LEFT JOIN CLIENTE c ON p.CLI_CODIGO = c.CLI_CODIGO\n    WHERE p.PED_DATAVENDA BETWEEN :DATA_INI AND :DATA_FIM\n    \n    UNION ALL\n    \n    SELECT\n        i.PROD_CODIGO,\n        e.ENT_DATAENTRADA as DATA_MOV,\n        'ENTRADA (EE)' as TIPO,\n        CAST(e.ENT_NUMERONOTAFISCAL AS VARCHAR(20)) as DOCUMENTO,\n        e.FOR_CODIGO as ENTIDADE_COD,\n        f.FOR_NOME as ENTIDADE_NOME,\n        i.ENI_QTDEENTRADA as QTDE,\n        i.ENI_VALORUNITARIO as VALOR_UNIT,\n        (i.ENI_QTDEENTRADA * i.ENI_VALORUNITARIO) as TOTAL\n    FROM ENTITENS i\n    JOIN ENTRADA e ON i.ENT_NUMEROOPERACAO = e.ENT_NUMEROOPERACAO\n    LEFT JOIN FORNECEDOR f ON e.FOR_CODIGO = f.FOR_CODIGO\n    WHERE e.ENT_DATAENTRADA BETWEEN :DATA_INI AND :DATA_FIM\n) mov\nJOIN PRODUTO prod ON mov.PROD_CODIGO = prod.PROD_CODIGO\nORDER BY mov.PROD_CODIGO, mov.DATA_MOV"
+  }
+}

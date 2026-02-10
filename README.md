@@ -10,34 +10,23 @@ Sistema completo e modular para extração de dados de **qualquer banco Firebird
 - 📊 **Barra de Progresso** - Acompanhe a extração em tempo real
 - 🎨 **Temas Personalizáveis** - Escolha o visual que preferir (salvos automaticamente)
 - 🔍 **Filtros Dinâmicos** - Extraia apenas o período desejado
-- 📝 **Editor SQL Integrado** - Biblioteca com 12+ queries úteis + editor livre
-- 🧪 **Teste de Queries** - Valide SQL antes de extrair
-- 📖 **Sistema de Ajuda** - Manual completo + referência SQL Firebird
-- 📝 **Logs Automáticos** - Histórico completo de todas as operações
-- ⚡ **Multithreading** - Interface não trava durante extrações pesadas
+- 🛠️ **Central de Diagnóstico** - Execute scripts utilitários e testes diretamente pela interface
+- 📝 **Editor SQL Integrado** - Biblioteca com 15+ queries úteis (incluindo diagnósticos) + editor livre
+- 🔍 **Filtros Dinâmicos** - Extração inteligente (ex: tratamento de CPF/CNPJ com espaços em branco)
 
 ## 📂 Estrutura do Projeto
 
 ```
 migracao_firebird/
 ├── core/               # Lógica principal (Banco e Exportador)
-│   ├── database.py     # Gerenciamento de conexões
-│   └── exporter.py     # Processamento e exportação
 ├── ui/                 # Interface Gráfica Tkinter
-│   ├── app.py          # Janela principal
-│   ├── sql_editor.py   # Editor SQL com biblioteca de queries
-│   └── help_window.py  # Sistema de ajuda
-├── utils/              # Utilitários
-│   ├── logger.py       # Sistema de logs
-│   ├── preferences.py  # Gerenciamento de preferências (temas)
-│   └── migracao_helpers.py  # Utilitários para migração de dados
-├── tools/              # Scripts auxiliares de diagnóstico
-├── sql/                # Consultas SQL customizáveis
-│   └── query_library.json  # Biblioteca de queries salvas
+├── utils/              # Utilitários (Log, Preferências)
+├── tools/              # Central de Diagnóstico (Scripts de teste e utilitários)
+├── sql/                # Consultas SQL e biblioteca de queries
+├── docs/               # Manuais, Editais e Documentos de Suporte
 ├── output/             # Arquivos Excel gerados
-├── logs/               # Histórico de execuções
+├── scripts/            # Scripts de automação (índices, etc.)
 ├── main_gui.py         # 🎯 INICIAR AQUI (Interface Gráfica)
-├── exportar.py         # Modo linha de comando (CLI)
 ├── config.py           # Configurações padrão
 └── requirements.txt    # Dependências Python
 ```
@@ -85,7 +74,6 @@ Clique em **"INICIAR EXTRAÇÃO TOTAL"** e acompanhe o progresso!
   - `xlsxwriter` - Geração de Excel
   - `tqdm` - Barras de progresso
 
-
 ## 📖 Recursos Avançados
 
 ### 🔍 Consulta de Produtos (Novo!)
@@ -97,12 +85,14 @@ Interface completa para consulta e análise de produtos com recursos avançados:
 #### 🎯 Funcionalidades Principais
 
 **Busca Inteligente:**
+
 - ✅ Busca multi-palavra com lógica AND (ex: "COXIM CORSA" busca produtos que contenham AMBOS os termos)
 - ✅ Busca por código, descrição ou aplicação
 - ✅ Busca vazia com confirmação para listar todos os produtos
 - ✅ Seleção automática do primeiro resultado
 
 **Filtros Avançados:**
+
 - 📊 **Filtros de Estoque:**
   - Positivo (≥1)
   - Zerado (=0)
@@ -116,6 +106,7 @@ Interface completa para consulta e análise de produtos com recursos avançados:
 - 🔄 **Botão "Mostrar Todos":** Reseta todos os filtros para o padrão
 
 **Tabela de Produtos:**
+
 - 📋 **10 Colunas Informativas:**
   - Código do Produto
   - Código Fabricante
@@ -131,6 +122,7 @@ Interface completa para consulta e análise de produtos com recursos avançados:
 - 📏 **Scroll Horizontal:** Visualize todas as colunas confortavelmente
 
 **Detalhes do Produto:**
+
 - 🖼️ **Imagem do Produto:**
   - Miniatura fixa (150x150px) que não quebra o layout
   - Clique para ampliar em janela popup (até 800x600px)
@@ -142,6 +134,7 @@ Interface completa para consulta e análise de produtos com recursos avançados:
   - Duplo clique para carregar similar na tela principal
 
 **Histórico de Compras:**
+
 - 📊 Últimas compras do produto selecionado
 - 💰 Preço médio calculado automaticamente
 - 📅 Data, Fornecedor, Quantidade, Preço Unitário e Nota Fiscal
@@ -181,10 +174,10 @@ Funcionalidade especial para facilitar a migração de dados para novos sistemas
 **💡 Dica:** Devido a limitações do Windows Clipboard History, recomendamos copiar manualmente usando Ctrl+C ao invés de usar o botão automático.
 
 **Exemplo de saída:**
+
 ```
 FIAT PALIO / SIENA / STRADA - MOTOR 1.0 / 1.4 - ORIG: 7087241/93385042
 ```
-
 
 ### � Consulta de Vendas (Pedidos)
 
@@ -195,11 +188,13 @@ Interface completa para consultar e analisar pedidos de venda com busca rápida 
 #### 🎯 Funcionalidades Principais
 
 **Busca Rápida:**
+
 - 🔢 **Por Número de Operação** - Busca direta pelo número do pedido
 - 📅 **Por Cliente** - Busca por código ou nome do cliente
 - 📆 **Por Intervalo de Datas** - Filtra vendas por período
 
 **Tabela de Pedidos (11 colunas):**
+
 - Nº Operação, Data Venda, Cliente
 - Vendedor, Placa, Modelo Veículo
 - Valores: Total, Desconto, Líquido
@@ -207,12 +202,14 @@ Interface completa para consultar e analisar pedidos de venda com busca rápida 
 - ⬆️⬇️ **Ordenação por coluna** com indicador visual
 
 **Detalhes do Pedido:**
+
 - 📋 Informações completas do cliente e vendedor
 - 🚗 Dados do veículo (placa, modelo, ano, km)
 - 💰 Valores detalhados (total, desconto, líquido)
 - 📝 Observações e natureza da venda
 
 **Itens do Pedido:**
+
 - 📦 Tabela de produtos vendidos com 8 colunas:
   - Código, Descrição
   - Qtde, Vl. Unit., Vl. Total
@@ -225,7 +222,6 @@ Interface completa para consultar e analisar pedidos de venda com busca rápida 
 - 📅 **Auto-formatação de datas** (DD/MM/AAAA)
 - ⚡ **Conexão persistente** durante toda a sessão
 
-
 ### �📦 Consulta de Entrada de NF (Novo!)
 
 **Menu: Consultas → Entrada de NF**
@@ -235,6 +231,7 @@ Interface completa para consultar e analisar entradas de notas fiscais com múlt
 #### 🎯 Funcionalidades Principais
 
 **4 Formas de Busca:**
+
 - 🔢 **Por Número de Pedido** - Busca direta pelo número do pedido
 - 📄 **Por Número de Nota Fiscal** - Localiza pela NF
 - 🏭 **Por Fornecedor** - Busca por código ou nome do fornecedor + período
@@ -243,6 +240,7 @@ Interface completa para consultar e analisar entradas de notas fiscais com múlt
 - 📅 **Por Intervalo de Datas** - Filtra por período específico
 
 **Tabela de Resultados (13 colunas):**
+
 - Operação, Nota Fiscal, **Código Fornecedor**, Fornecedor
 - Data Entrada, Tipo Entrada
 - Valores: Frete, IPI, ICMS, Desconto, Total
@@ -250,11 +248,13 @@ Interface completa para consultar e analisar entradas de notas fiscais com múlt
 - ⬆️⬇️ **Ordenação por coluna** com indicador visual
 
 **Detalhes da Entrada:**
+
 - 📋 Informações completas do fornecedor
 - 💰 Valores detalhados (IPI, ICMS, Frete, Total)
 - 📊 Status e tipo da entrada
 
 **Itens da Entrada:**
+
 - 📦 Tabela de produtos com 9 colunas:
   - Código, Descrição, Qtde, Vl. Unit., % IPI
   - Reajuste, Vl Venda, NCM, Vl. Total
@@ -266,7 +266,6 @@ Interface completa para consultar e analisar entradas de notas fiscais com múlt
 - 📅 **Auto-formatação de datas** (DD/MM/AAAA) com cursor inteligente
 - ⚡ **Conexão persistente** durante toda a sessão
 
-
 ### 💰 Relatório de Faturamento por Cliente (Novo!)
 
 **Menu: Relatórios → Faturamento por Cliente**
@@ -276,6 +275,7 @@ Relatório completo de vendas por cliente com filtros avançados e exportação 
 #### 🎯 Funcionalidades Principais
 
 **Busca Flexível:**
+
 - 👤 **Por Cliente:**
   - Código numérico (ex: `834`)
   - Nome com múltiplas palavras (ex: `JULIO CEZAR`)
@@ -286,12 +286,14 @@ Relatório completo de vendas por cliente com filtros avançados e exportação 
   - 🔘 **Não Pagos** - Apenas vendas em aberto
 
 **Tabela de Vendas (7 colunas):**
+
 - Código Produto, Descrição Produto
 - Pedido, Data Venda
 - Qtde, Vl. Unitário, Vl. Total
 - 📊 **Totais no rodapé** (quantidade e valor)
 
 **Exportação para PDF:**
+
 - 📄 **Formato retrato** (A4)
 - 🎨 **Cabeçalho profissional** com dados da empresa
 - 📋 **Tabela formatada** com todas as vendas
@@ -306,12 +308,14 @@ Relatório completo de vendas por cliente com filtros avançados e exportação 
 Cria índices no banco de dados para melhorar significativamente a performance:
 
 **Índices criados:**
+
 - `IDX_PEDIDO_CLIENTE` - Busca rápida por cliente
 - `IDX_PEDIDO_DATA` - Filtro eficiente por período
 - `IDX_RECEBER_PEDIDO` - JOIN otimizado com contas a receber
 - `IDX_RECEBTO_RECOP` - Verificação rápida de pagamento
 
-**Ganho esperado:** 
+**Ganho esperado:**
+
 - Sem índices: 6-11 segundos
 - Com índices: < 2 segundos (em SSD)
 - **Nota:** Performance depende do hardware (HD vs SSD)
@@ -324,7 +328,6 @@ Cria índices no banco de dados para melhorar significativamente a performance:
 - 🎨 **Layout em duas seções** (busca e resultados)
 - 📅 **Datas padrão** (primeiro dia do mês até hoje)
 - 💾 **Diálogo de salvamento** com nome sugestivo
-
 
 ### 📝 Editor SQL Integrado
 
@@ -380,6 +383,7 @@ Antes de executar uma extração:
 **Menu: Temas**
 
 Escolha entre os temas disponíveis:
+
 - `winnative` - Visual nativo do Windows (recomendado)
 - `clam` - Estilo moderno e limpo
 - `alt` - Alternativo
@@ -427,6 +431,7 @@ As consultas SQL estão na pasta `sql/` e podem ser editadas pelo **Editor SQL**
 - `contas_receber.sql` - Contas a receber
 
 **Placeholders disponíveis:**
+
 - `:DATA_INI` - Data inicial (substituída automaticamente)
 - `:DATA_FIM` - Data final (substituída automaticamente)
 
@@ -440,13 +445,13 @@ As consultas SQL estão na pasta `sql/` e podem ser editadas pelo **Editor SQL**
 
 ### 🔍 Diferenças Firebird vs MySQL
 
-| MySQL | Firebird |
-|-------|----------|
-| `LIMIT 100` | `SELECT FIRST 100` |
-| `SHOW TABLES` | `SELECT ... FROM RDB$RELATIONS` |
-| `AUTO_INCREMENT` | `GENERATOR / SEQUENCE` |
-| `NOW()` | `CURRENT_TIMESTAMP` |
-| `CONCAT(a, b)` | `a \|\| b` |
+| MySQL            | Firebird                        |
+| ---------------- | ------------------------------- |
+| `LIMIT 100`      | `SELECT FIRST 100`              |
+| `SHOW TABLES`    | `SELECT ... FROM RDB$RELATIONS` |
+| `AUTO_INCREMENT` | `GENERATOR / SEQUENCE`          |
+| `NOW()`          | `CURRENT_TIMESTAMP`             |
+| `CONCAT(a, b)`   | `a \|\| b`                      |
 
 ## 🔒 Segurança
 
@@ -459,26 +464,31 @@ As consultas SQL estão na pasta `sql/` e podem ser editadas pelo **Editor SQL**
 ## 🐛 Solução de Problemas
 
 ### Erro: "No module named 'fdb'"
+
 ```bash
 pip install fdb
 ```
 
 ### Erro: "fbclient.dll not found"
+
 - Baixe o Firebird Client compatível com seu banco
 - Indique o caminho completo na interface
 
 ### Erro de conexão
+
 - Verifique se o banco está acessível
 - Confirme usuário e senha
 - Teste o DSN: `localhost:D:/caminho/banco.fdb`
 
 ### Janelas não aparecem centralizadas
+
 - Isso pode acontecer em monitores com DPI alto
 - As janelas ainda funcionam normalmente
 
 ## 📝 Logs
 
 Todos os logs são salvos em `logs/extracao_AAAAMMDD.log` com:
+
 - Timestamp de cada operação
 - Quantidade de registros processados
 - Erros detalhados (se houver)

@@ -1,55 +1,49 @@
-# Python
+# Python & Bytecode
 __pycache__/
 *.py[cod]
 *$py.class
+*.pyo
+*.pyc
+*.pyd
+.venv/
 venv/
 .env
 
-# Database & DLLs
+# Database & Runtime DLLs (Não incluir binários grandes no Git)
 *.fdb
 fbclient.dll
 gds32.dll
 
-# Output - DADOS SENSÍVEIS DA EMPRESA
+# Output & Logs (DADOS SENSÍVEIS - NUNCA SUBIR PARA O GIT)
 output/
+output_test/
+logs/
 *.xlsx
 *.xls
-
-# Logs - DADOS SENSÍVEIS
-logs/
 *.log
 
-# User preferences
+# User preferences & Local Config
 user_preferences.json
-
-# Python
-__pycache__/
-*.pyc
-*.pyo
-
-# IDEs
 .vscode/
 .idea/
 
-# Temporary files
-CLEANUP.md
-test_*.py
-query_*.txt
-*_pagination.py
-
-# Build executável
+# Build & Executable (PyInstaller)
 build/
 dist/
 *.spec
 build_exe.bat
 
-# Documentação de desenvolvimento
+# Documentação de Uso vs Documentação de Desenvolvimento
+# Mantemos README.md e docs/ no Git, mas arquivos de histórico/backup ficam de fora
+CLEANUP.md
 BUILD_EXECUTABLE.md
 EXECUTAVEL_GERADO.md
 BACKUP_CHECKLIST.md
+GIT_COMMIT.md
 
-# Scripts e análises temporárias
-analise_tabelas.py
-scripts/
+# Arquivos temporários de desenvolvimento (UI e Consultas Ad-hoc)
+query_*.txt
 ui/*_temp_*.txt
 ui/_otimizar_*.py
+analise_tabelas.py
+*_pagination.py

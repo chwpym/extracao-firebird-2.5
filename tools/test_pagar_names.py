@@ -1,4 +1,11 @@
+"""
+TESTE DE NOMES (CONTAS A PAGAR)
+Valida se o relacionamento entre as tabelas de Pagar e Fornecedores está correto.
+Gera uma amostra de 5 registros com o nome do fornecedor resolvido.
+"""
+
 import os
+
 import sys
 
 # Adiciona o diretório pai ao path para encontrar o config.py
@@ -8,15 +15,16 @@ import fdb
 import config
 import pandas as pd
 
+
 def test_pagar_names():
     con = fdb.connect(
-        dsn=config.DB_CONFIG['dsn'],
-        user=config.DB_CONFIG['user'],
-        password=config.DB_CONFIG['password'],
-        charset=config.DB_CONFIG['charset'],
-        fb_library_name=config.DB_CONFIG.get('fb_library_name')
+        dsn=config.DB_CONFIG["dsn"],
+        user=config.DB_CONFIG["user"],
+        password=config.DB_CONFIG["password"],
+        charset=config.DB_CONFIG["charset"],
+        fb_library_name=config.DB_CONFIG.get("fb_library_name"),
     )
-    
+
     # Testando com data de 2024 para garantir que venha dados e possamos ver os nomes
     sql = """
     SELECT FIRST 5
@@ -28,7 +36,7 @@ def test_pagar_names():
     JOIN PAGAR p ON d.PAG_NUMEROOPERACAO = p.PAG_NUMEROOPERACAO
     ORDER BY p.PAG_DATAEMISSAO DESC
     """
-    
+
     try:
         df = pd.read_sql(sql, con)
         print("\nResultado do teste de nomes no Contas a Pagar:")
@@ -37,6 +45,7 @@ def test_pagar_names():
         print(f"Erro no teste: {e}")
     finally:
         con.close()
+
 
 if __name__ == "__main__":
     test_pagar_names()

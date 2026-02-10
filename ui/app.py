@@ -49,8 +49,7 @@ class ExtractorApp:
             label="⚡ Otimizar Performance do Kardex", command=self._otimizar_kardex
         )
         tools_menu.add_command(
-            label="💰 Otimizar Performance do Faturamento",
-            command=self._otimizar_faturamento,
+            label="🛠️ Central de Diagnóstico e Testes", command=self._open_diagnostic
         )
 
         # Menu Consultas
@@ -152,6 +151,7 @@ class ExtractorApp:
             ("📦 Consultar\nEntrada de NF", self._open_entrada_nf_search),
             ("💰 Contas\na Receber", self._open_contas_receber_search),
             ("📍 Relatório\nLocalização", self._open_relatorio_localizacao),
+            ("🛠️ Diagnóstico\ne Testes", self._open_diagnostic),
         ]
 
         row, col = 0, 0
@@ -175,6 +175,11 @@ class ExtractorApp:
             os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "sql"
         )
         SQLEditorWindow(self.root, sql_dir)
+
+    def _open_diagnostic(self):
+        from ui.diagnostic_window import DiagnosticWindow
+
+        DiagnosticWindow(self.root)
 
     def _otimizar_kardex(self):
         import subprocess

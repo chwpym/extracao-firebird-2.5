@@ -3,25 +3,26 @@ from tkinter import ttk
 from tkinter.scrolledtext import ScrolledText
 import webbrowser
 
+
 class HelpWindow:
     def __init__(self, parent, help_type="manual"):
         self.parent = parent
         self.help_type = help_type
-        
+
         # Criar janela
         self.window = tk.Toplevel(parent)
         self.window.transient(parent)
-        
+
         if help_type == "manual":
             self.window.title("📖 Manual de Uso")
             self._show_manual()
         elif help_type == "sql_commands":
             self.window.title("💻 Comandos SQL Firebird")
             self._show_sql_commands()
-        
+
         # Centralizar
         self._center_window(900, 600)
-        
+
     def _center_window(self, width, height):
         """Centraliza a janela"""
         self.window.update_idletasks()
@@ -30,7 +31,7 @@ class HelpWindow:
         x = (screen_width - width) // 2
         y = (screen_height - height) // 2
         self.window.geometry(f"{width}x{height}+{x}+{y}")
-    
+
     def _show_manual(self):
         """Mostra o manual de uso"""
         content = """
@@ -43,7 +44,9 @@ class HelpWindow:
   2. Configuração Inicial
   3. Extração de Dados
   4. Editor SQL
-  5. Dicas e Truques
+  5. Central de Diagnóstico
+  6. Dicas e Truques
+
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -100,7 +103,8 @@ Entidades extraídas:
   🏭 fornecedores.xlsx
   📊 entradas_saidas.xlsx (Kardex)
   💰 contas_pagar.xlsx
-  💵 contas_receber.xlsx
+  💵 contas_receber.xlsx (Agora com Número de Pedido e NF)
+
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -132,7 +136,21 @@ Menu: Configurar → Editar Consultas SQL
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-5️⃣ DICAS E TRUQUES
+5️⃣ CENTRAL DE DIAGNÓSTICO
+
+Menu: Ferramentas → Central de Diagnóstico e Testes
+
+Esta central permite rodar ferramentas de validação sem sair do sistema:
+  ✅ Investigar Cliente: Detalha documentos de um cliente específico.
+  ✅ Teste Rápido: Gera amostras de Excel instantâneas.
+  ✅ Scripts de Performance: Testa o tempo de resposta do banco.
+
+Os logs da execução aparecem em tempo real no console preto da janela.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+6️⃣ DICAS E TRUQUES
+
 
 💡 Dica 1: Use a query "Listar Todas as Tabelas" para explorar o banco
 
@@ -159,14 +177,16 @@ Para mais informações sobre Firebird SQL:
 
 Desenvolvido para facilitar migrações de dados Firebird 2.5 para Excel.
 """
-        
+
         text_widget = ScrolledText(self.window, wrap=tk.WORD, font=("Consolas", 9))
         text_widget.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
-        text_widget.insert('1.0', content)
-        text_widget.config(state='disabled')
-        
-        ttk.Button(self.window, text="Fechar", command=self.window.destroy).pack(pady=10)
-    
+        text_widget.insert("1.0", content)
+        text_widget.config(state="disabled")
+
+        ttk.Button(self.window, text="Fechar", command=self.window.destroy).pack(
+            pady=10
+        )
+
     def _show_sql_commands(self):
         """Mostra referência de comandos SQL Firebird"""
         content = """
@@ -333,42 +353,54 @@ IFNULL(x, y)             →  COALESCE(x, y)
 
 💡 Use o Editor SQL para testar suas queries antes de executar!
 """
-        
+
         text_widget = ScrolledText(self.window, wrap=tk.WORD, font=("Consolas", 9))
         text_widget.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
-        text_widget.insert('1.0', content)
-        text_widget.config(state='disabled')
-        
-        ttk.Button(self.window, text="Fechar", command=self.window.destroy).pack(pady=10)
+        text_widget.insert("1.0", content)
+        text_widget.config(state="disabled")
+
+        ttk.Button(self.window, text="Fechar", command=self.window.destroy).pack(
+            pady=10
+        )
+
 
 def open_documentation():
     """Abre links de documentação no navegador"""
     links = [
         ("Firebird RDBMS (PT-BR)", "https://www.firebirdsql.org/pt/firebird-rdbms"),
         ("Firebird Development (PT-BR)", "https://www.firebirdsql.org/pt/development"),
-        ("Python FDB Documentation", "https://fdb.readthedocs.io/")
+        ("Python FDB Documentation", "https://fdb.readthedocs.io/"),
     ]
-    
+
     msg = "Escolha qual documentação abrir:\n\n"
     for i, (name, url) in enumerate(links, 1):
         msg += f"{i}. {name}\n"
-    
+
     # Criar janela de seleção
     root = tk.Tk()
     root.withdraw()
-    
+
     choice_window = tk.Toplevel()
     choice_window.title("📚 Documentação Online")
     choice_window.geometry("400x250")
-    
-    ttk.Label(choice_window, text="Escolha qual documentação abrir:", font=("Arial", 10, "bold")).pack(pady=10)
-    
+
+    ttk.Label(
+        choice_window,
+        text="Escolha qual documentação abrir:",
+        font=("Arial", 10, "bold"),
+    ).pack(pady=10)
+
     for name, url in links:
-        ttk.Button(choice_window, text=f"🌐 {name}", 
-                  command=lambda u=url: [webbrowser.open(u), choice_window.destroy()]).pack(pady=5, padx=20, fill=tk.X)
-    
-    ttk.Button(choice_window, text="Cancelar", command=choice_window.destroy).pack(pady=10)
-    
+        ttk.Button(
+            choice_window,
+            text=f"🌐 {name}",
+            command=lambda u=url: [webbrowser.open(u), choice_window.destroy()],
+        ).pack(pady=5, padx=20, fill=tk.X)
+
+    ttk.Button(choice_window, text="Cancelar", command=choice_window.destroy).pack(
+        pady=10
+    )
+
     # Centralizar
     choice_window.update_idletasks()
     width = 400

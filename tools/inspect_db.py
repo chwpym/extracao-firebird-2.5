@@ -1,4 +1,11 @@
+"""
+INSPECIONAR PROCEDURES E TABELAS
+Analisa a estrutura da procedure EXTRATOPRODUTOS e da tabela EXTRATOPRODUTO.
+Útil para entender como o sistema legado processa entradas e saídas.
+"""
+
 import os
+
 import sys
 
 # Adiciona o diretório pai ao path para encontrar o config.py
@@ -8,13 +15,14 @@ import fdb
 import config
 import pandas as pd
 
+
 def inspect():
     con = fdb.connect(
-        dsn=config.DB_CONFIG['dsn'],
-        user=config.DB_CONFIG['user'],
-        password=config.DB_CONFIG['password'],
-        charset=config.DB_CONFIG['charset'],
-        fb_library_name=config.DB_CONFIG.get('fb_library_name')
+        dsn=config.DB_CONFIG["dsn"],
+        user=config.DB_CONFIG["user"],
+        password=config.DB_CONFIG["password"],
+        charset=config.DB_CONFIG["charset"],
+        fb_library_name=config.DB_CONFIG.get("fb_library_name"),
     )
     cur = con.cursor()
 
@@ -40,11 +48,12 @@ def inspect():
         for p in params:
             io = "Output" if p[1] == 1 else "Input"
             print(f"  {p[0].strip()} ({io})")
-            
+
     except Exception as e:
         print(f"Error inspecting procedure: {e}")
 
     con.close()
+
 
 if __name__ == "__main__":
     inspect()

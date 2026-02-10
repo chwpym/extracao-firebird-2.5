@@ -158,17 +158,17 @@ class ContasReceberSearchWindow:
         )
 
         headers = {
-            "op": "Nº Op",
-            "nf": "Nº NF",
-            "emissao": "Emissão",
+            "op": "Pedido",
+            "nf": "NF",
+            "emissao": "Movimento",
             "cod_cli": "Cód Cli",
             "cliente": "Nome Cliente",
             "parcela": "Parc",
             "vencimento": "Vencimento",
-            "valor": "R$ Parcela",
-            "recebido": "R$ Recebido",
-            "data_rec": "Data Rec.",
-            "tpf": "TPF-Recebido",
+            "valor": "Valor Parc",
+            "recebido": "Valor Pago",
+            "data_rec": "Pagamento",
+            "tpf": "Forma",
         }
 
         for col, head in headers.items():
@@ -318,30 +318,32 @@ class ContasReceberSearchWindow:
 
         for idx, row in self.df_resultados.iterrows():
             d_emissao = (
-                row["REC_DATAEMISSAO"].strftime("%d/%m/%Y")
-                if pd.notna(row["REC_DATAEMISSAO"])
+                row["Data de Movimento"].strftime("%d/%m/%Y")
+                if pd.notna(row["Data de Movimento"])
                 else ""
             )
             d_venc = (
-                row["RED_DATAVENCIMENTO"].strftime("%d/%m/%Y")
-                if pd.notna(row["RED_DATAVENCIMENTO"])
+                row["Data de Vencimento"].strftime("%d/%m/%Y")
+                if pd.notna(row["Data de Vencimento"])
                 else ""
             )
             d_rec = (
-                row["DATA_REC_REAL"].strftime("%d/%m/%Y")
-                if pd.notna(row["DATA_REC_REAL"])
+                row["Data de Pagamento"].strftime("%d/%m/%Y")
+                if pd.notna(row["Data de Pagamento"])
                 else ""
             )
-            tpf = row["TPF_RECEBIDO"] if pd.notna(row["TPF_RECEBIDO"]) else ""
+            tpf = (
+                row["Forma de Pagamento"] if pd.notna(row["Forma de Pagamento"]) else ""
+            )
 
             v_parc = (
-                f"R$ {row['RED_VALORPARCELA']:,.2f}"
-                if pd.notna(row["RED_VALORPARCELA"])
+                f"R$ {row['Valor da Duplicata']:,.2f}"
+                if pd.notna(row["Valor da Duplicata"])
                 else "R$ 0,00"
             )
             v_rec = (
-                f"R$ {row['RED_VALORRECEBIDO']:,.2f}"
-                if pd.notna(row["RED_VALORRECEBIDO"])
+                f"R$ {row['Valor Pago']:,.2f}"
+                if pd.notna(row["Valor Pago"])
                 else "R$ 0,00"
             )
 
@@ -349,12 +351,12 @@ class ContasReceberSearchWindow:
                 "",
                 tk.END,
                 values=(
-                    row["REC_NUMEROOPERACAO"],
-                    row["REC_NUMERONOTAFISCAL"],
+                    row["Número da Duplicata"],
+                    row["Número da NF"],
                     d_emissao,
-                    row["CLI_CODIGO"],
-                    row["CLI_NOME"],
-                    row["RED_PARCELA"],
+                    row["Código do Cliente"],
+                    row["Descrição do Cliente"],
+                    row["Parcela da Duplicata"],
                     d_venc,
                     v_parc,
                     v_rec,
@@ -374,7 +376,7 @@ class ContasReceberSearchWindow:
         self.txt_historico.config(state=tk.NORMAL)
         self.txt_historico.delete(1.0, tk.END)
         self.txt_historico.insert(
-            tk.END, str(row["REC_HISTORICO"]) if pd.notna(row["REC_HISTORICO"]) else ""
+            tk.END, str(row["Histórico"]) if pd.notna(row["Histórico"]) else ""
         )
         self.txt_historico.config(state=tk.DISABLED)
 
